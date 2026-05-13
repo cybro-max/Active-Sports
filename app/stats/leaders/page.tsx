@@ -52,7 +52,7 @@ async function LeaderCard({
       </div>
       
       <div className="space-y-4">
-        {data.slice(0, 5).map((p, i) => {
+        {data.slice(0, 5).map((p: any, i: number) => {
           const stats = p.statistics?.[0];
           if (!stats) return null;
           
@@ -109,7 +109,7 @@ async function LeaderCard({
 export default async function LeadersPage({ searchParams }: PageProps) {
   const { league: leagueParam } = await searchParams;
   const leagueId = leagueParam ? Number(leagueParam) : 39; // Default to Premier League
-  const currentLeague = MAJOR_LEAGUES.find(l => l.id === leagueId) || MAJOR_LEAGUES[0];
+  const currentLeague = MAJOR_LEAGUES.find((l: { id: number }) => l.id === leagueId) || MAJOR_LEAGUES[0];
 
   const [scorers, assists, yellow, red] = await Promise.all([
     captureCatch(getTopScorers(leagueId, CURRENT_SEASON), []),
@@ -143,7 +143,7 @@ export default async function LeadersPage({ searchParams }: PageProps) {
           </p>
 
           <div className="flex flex-wrap gap-2">
-            {MAJOR_LEAGUES.slice(0, 5).map(l => (
+            {MAJOR_LEAGUES.slice(0, 5).map((l: any) => (
               <Link
                 key={l.id}
                 href={`/stats/leaders?league=${l.id}`}

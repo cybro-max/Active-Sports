@@ -19,7 +19,7 @@ export default async function LeaguesPage() {
   });
 
   if (!leagues.length) {
-    leagues = MAJOR_LEAGUES.map(l => ({
+    leagues = MAJOR_LEAGUES.map((l: any) => ({
       id: l.id,
       name: l.name,
       type: 'League',
@@ -32,7 +32,7 @@ export default async function LeaguesPage() {
     }));
   }
 
-  const countriesCount = new Set(leagues.map(l => l.country)).size;
+  const countriesCount = new Set(leagues.map((l: any) => l.country)).size;
 
   return (
     <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

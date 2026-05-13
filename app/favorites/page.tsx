@@ -31,9 +31,9 @@ export default async function FavoritesPage() {
   });
 
   const byType = {
-    team: favorites.filter((f) => f.type === 'team'),
-    league: favorites.filter((f) => f.type === 'league'),
-    player: favorites.filter((f) => f.type === 'player'),
+    team: favorites.filter((f: any) => f.type === 'team'),
+    league: favorites.filter((f: any) => f.type === 'league'),
+    player: favorites.filter((f: any) => f.type === 'player'),
   };
 
   const totalCount = favorites.length;

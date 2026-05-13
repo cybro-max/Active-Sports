@@ -194,7 +194,7 @@ export default async function WorldCupTeamPage({ params }: Props) {
             )}
             {formString && (
               <div className="flex items-center justify-center gap-1.5 p-2 bg-[var(--bg-subtle)] rounded-full border border-[var(--border)]">
-                {formString.slice(-5).split('').map((r, i) => (
+                {formString.slice(-5).split('').map((r: any, i: number) => (
                   <span
                     key={i}
                     className="flex items-center justify-center rounded-full font-bold text-white"
@@ -235,7 +235,7 @@ export default async function WorldCupTeamPage({ params }: Props) {
                       {pos}s
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {players.map((p) => (
+                      {players.map((p: any) => (
                         <Link
                           key={p.id}
                           href={`/player/${toSlug(p.name)}`}
@@ -289,7 +289,7 @@ export default async function WorldCupTeamPage({ params }: Props) {
                     </tr>
                   </thead>
                   <tbody>
-                    {groupTeams.map((s) => (
+                    {groupTeams.map((s: any) => (
                       <tr
                         key={s.team.id}
                         className="border-t transition-colors"
@@ -384,7 +384,7 @@ export default async function WorldCupTeamPage({ params }: Props) {
             <div className="card p-4 fade-up">
               <h3 className="font-semibold mb-3 text-sm">Recent Results</h3>
               <div className="space-y-2">
-                {recentResults.map((f) => (
+                {recentResults.map((f: any) => (
                   <MatchCard key={f.fixture.id} fixture={f} compact />
                 ))}
               </div>
@@ -395,7 +395,7 @@ export default async function WorldCupTeamPage({ params }: Props) {
             <div className="card p-4 fade-up fade-up-delay-1">
               <h3 className="font-semibold mb-3 text-sm">Upcoming</h3>
               <div className="space-y-2">
-                {upcomingFixtures.map((f) => (
+                {upcomingFixtures.map((f: any) => (
                   <MatchCard key={f.fixture.id} fixture={f} compact />
                 ))}
               </div>

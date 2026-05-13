@@ -50,7 +50,7 @@ async function getDirectoryPlayers() {
 
   try {
     const standingsRes = await Promise.allSettled(
-      top5Leagues.map(id => getStandings(id, CURRENT_SEASON))
+      top5Leagues.map((id: number) => getStandings(id, CURRENT_SEASON))
     );
 
     const teamData: { id: number, leagueName: string }[] = [];
@@ -70,7 +70,7 @@ async function getDirectoryPlayers() {
     const eliteTeams = teamData.slice(0, 80);
     for (let i = 0; i < eliteTeams.length; i += 10) {
       const batch = eliteTeams.slice(i, i + 10);
-      await Promise.allSettled(batch.map(async (t) => {
+      await Promise.allSettled(batch.map(async (t: any) => {
         const squad = await getSquad(t.id);
         if (squad?.[0]) {
           // SYNC TO DB IN BACKGROUND
