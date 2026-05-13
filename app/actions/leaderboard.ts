@@ -15,8 +15,8 @@ export async function getLeaderboard() {
     });
 
     const ranked = users
-      .map(user => {
-        const totalPoints = user.predictions.reduce((sum, p) => sum + p.points, 0);
+      .map((user: any) => {
+        const totalPoints = user.predictions.reduce((sum: number, p: any) => sum + p.points, 0);
         const streak = user.predictions.length; // Simplified streak logic
         return {
           id: user.id,
