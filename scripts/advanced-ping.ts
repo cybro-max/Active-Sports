@@ -4,21 +4,25 @@ import { toSlug } from '../lib/slug';
 
 const prisma = new PrismaClient();
 const BASE_URL = 'https://activesports.live';
-const DAILY_QUOTA = 180; // Leaving some buffer (Google limit is usually 200)
+const DAILY_QUOTA = 180; 
 
 async function advancedPing() {
   console.log('🛡️ Starting Advanced Google Indexing Discovery...');
 
   // 1. Auth Setup
-  let authClient;
+  let authClient: any;
   if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
-    const keys = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
-    authClient = new google.auth.JWT(
-      keys.client_email,
-      null,
-      keys.private_key,
-      ['https://www.googleapis.com/auth/indexing']
-    );
+    try {
+      const keys = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+      authClient = new google.auth.JWT({
+        email: keys.client_email,
+        key: keys.private_key,
+        scopes: ['https://www.googleapis.com/auth/indexing']
+      });
+    } catch (e: any) {
+      console.error('❌ Error parsing GOOGLE_SERVICE_ACCOUNT_JSON:', e.message);
+      process.exit(1);
+    }
   } else {
     console.error('❌ GOOGLE_SERVICE_ACCOUNT_JSON not found in environment.');
     process.exit(1);
@@ -45,45 +49,57 @@ async function advancedPing() {
   // 2. Discover URLs to Ping
   const targets: { url: string; model?: string; id?: number }[] = [];
 
-  // A. Static High-Priority Pages (Always ping these)
+  // A. Static High-Priority Pages
   const statics = ['', '/fixtures', '/leagues', '/teams', '/players', '/world-cup', '/stats/leaders'];
   statics.forEach(s => targets.push({ url: `${BASE_URL}${s}` }));
 
   // B. Modified Leagues
-  const leagues = await prisma.league.findMany({
-    where: {
-      OR: [
-        { lastPingedAt: null },
-        { updatedAt: { gt: prisma.league.fields.lastPingedAt } }
-      ]
-    },
-    take: 50,
-  });
-  leagues.forEach(l => targets.push({ url: `${BASE_URL}/league/${toSlug(l.name)}`, model: 'league', id: l.id }));
+  try {
+    const leagues = await (prisma.league as any).findMany({
+      where: {
+        OR: [
+          { lastPingedAt: null },
+          { updatedAt: { gt: (prisma.league as any).fields?.lastPingedAt || new Date(0) } }
+        ]
+      },
+      take: 50,
+    });
+    leagues.forEach((l: any) => targets.push({ url: `${BASE_URL}/league/${toSlug(l.name)}`, model: 'league', id: l.id }));
+  } catch (e) {
+    console.warn('⚠️ Could not fetch leagues for indexing (types might be stale).');
+  }
 
   // C. Modified Teams
-  const teams = await prisma.team.findMany({
-    where: {
-      OR: [
-        { lastPingedAt: null },
-        { updatedAt: { gt: prisma.team.fields.lastPingedAt } }
-      ]
-    },
-    take: 100,
-  });
-  teams.forEach(t => targets.push({ url: `${BASE_URL}/team/${toSlug(t.name)}`, model: 'team', id: t.id }));
+  try {
+    const teams = await (prisma.team as any).findMany({
+      where: {
+        OR: [
+          { lastPingedAt: null },
+          { updatedAt: { gt: (prisma.team as any).fields?.lastPingedAt || new Date(0) } }
+        ]
+      },
+      take: 100,
+    });
+    teams.forEach((t: any) => targets.push({ url: `${BASE_URL}/team/${toSlug(t.name)}`, model: 'team', id: t.id }));
+  } catch (e) {
+    console.warn('⚠️ Could not fetch teams for indexing.');
+  }
 
   // D. Modified Players
-  const players = await prisma.player.findMany({
-    where: {
-      OR: [
-        { lastPingedAt: null },
-        { updatedAt: { gt: prisma.player.fields.lastPingedAt } }
-      ]
-    },
-    take: 200,
-  });
-  players.forEach(p => targets.push({ url: `${BASE_URL}/player/${toSlug(p.name)}`, model: 'player', id: p.id }));
+  try {
+    const players = await (prisma.player as any).findMany({
+      where: {
+        OR: [
+          { lastPingedAt: null },
+          { updatedAt: { gt: (prisma.player as any).fields?.lastPingedAt || new Date(0) } }
+        ]
+      },
+      take: 200,
+    });
+    players.forEach((p: any) => targets.push({ url: `${BASE_URL}/player/${toSlug(p.name)}`, model: 'player', id: p.id }));
+  } catch (e) {
+    console.warn('⚠️ Could not fetch players for indexing.');
+  }
 
   console.log(`🔎 Found ${targets.length} potential targets. Quota: ${DAILY_QUOTA}`);
 
@@ -96,16 +112,19 @@ async function advancedPing() {
 
     const success = await sendPing(target.url);
     if (success && target.model && target.id) {
-      // Update DB state
       const now = new Date();
-      if (target.model === 'league') {
-        await prisma.league.update({ where: { id: target.id }, data: { lastPingedAt: now } });
-      } else if (target.model === 'team') {
-        await prisma.team.update({ where: { id: target.id }, data: { lastPingedAt: now } });
-      } else if (target.model === 'player') {
-        await prisma.player.update({ where: { id: target.id }, data: { lastPingedAt: now } });
+      try {
+        if (target.model === 'league') {
+          await (prisma.league as any).update({ where: { id: target.id }, data: { lastPingedAt: now } });
+        } else if (target.model === 'team') {
+          await (prisma.team as any).update({ where: { id: target.id }, data: { lastPingedAt: now } });
+        } else if (target.model === 'player') {
+          await (prisma.player as any).update({ where: { id: target.id }, data: { lastPingedAt: now } });
+        }
+        console.log(`  ✅ Pinged & Logged: ${target.url}`);
+      } catch (e) {
+        console.error(`  ⚠️ Pinged but failed to log in DB: ${target.url}`);
       }
-      console.log(`  ✅ Pinged & Logged: ${target.url}`);
     } else if (success) {
       console.log(`  ✅ Pinged (Static): ${target.url}`);
     }
