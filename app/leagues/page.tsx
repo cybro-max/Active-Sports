@@ -29,6 +29,7 @@ export default async function LeaguesPage() {
       code: null,
       season: 2024,
       updatedAt: new Date(),
+      lastPingedAt: null,
     }));
   }
 
