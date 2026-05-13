@@ -1,14 +1,15 @@
-name: Google Indexing Ping
+name: Advanced Google Indexing
 
 on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight
-  workflow_dispatch: # Allow manual trigger
+    - cron: '0 0 * * *' # Every day at midnight UTC
+  workflow_dispatch:
 
 jobs:
-  ping:
+  index:
+    name: Discovery & Indexing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,15 +23,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Ping Google Indexing API
-        run: |
-          npx tsx scripts/ping-google.ts \
-          https://activesports.live \
-          https://activesports.live/fixtures \
-          https://activesports.live/leagues \
-          https://activesports.live/teams \
-          https://activesports.live/players \
-          https://activesports.live/world-cup \
-          https://activesports.live/stats/leaders
+      - name: Generate Prisma Client
+        run: npx prisma generate
         env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Run Advanced Indexing
+        run: npx tsx scripts/advanced-ping.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          NODE_ENV: production

@@ -86,7 +86,8 @@ model League {
   flag      String?
   code      String?
   season    Int
-  updatedAt DateTime @updatedAt
+  updatedAt    DateTime @updatedAt
+  lastPingedAt DateTime?
 
   @@index([country])
   @@index([name])
@@ -118,7 +119,8 @@ model Team {
   venueId     Int?
   leagueId    Int?
   leagueName  String?
-  updatedAt   DateTime @updatedAt
+  updatedAt    DateTime @updatedAt
+  lastPingedAt DateTime?
   players     Player[]
 
   @@index([name])
@@ -138,7 +140,8 @@ model Player {
   teamId      Int?
   position    String?
   number      Int?
-  updatedAt   DateTime @updatedAt
+  updatedAt    DateTime @updatedAt
+  lastPingedAt DateTime?
 
   @@index([name])
   @@index([teamId])
