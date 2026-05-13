@@ -6,13 +6,14 @@ import { prisma } from '@/lib/prisma';
 /**
  * Dynamic Sitemap Generator for ActiveSports.
  * Automatically indexes new players and teams as they are synced to our DB.
+ * Supports up to 50,000 URLs (Search Console limit for a single sitemap).
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://activesports.live';
   const now = new Date();
   const db = prisma as any;
 
-  // 1. Static Pages
+  // 1. Static Core Pages
   const staticPages = [
     '',
     '/fixtures',
@@ -41,37 +42,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === '' ? 1.0 : (route.startsWith('/world-cup') ? 0.9 : 0.8),
   }));
 
-  // 2. Dynamic Leagues
-  const leaguePages = MAJOR_LEAGUES.map((l) => ({
-    url: `${baseUrl}/league/${toSlug(l.name)}`,
-    lastModified: now,
-    changeFrequency: 'daily' as const,
-    priority: 0.8,
-  }));
-
-  // 3. Dynamic Players (Limit to top 3000 for sitemap performance)
-  let playerPages: any[] = [];
+  // 2. Dynamic Leagues (From DB with fallback to Config)
+  let leaguePages: any[] = [];
   try {
-    const players = await db.player.findMany({
-      take: 3000,
-      orderBy: { updatedAt: 'desc' },
+    const leagues = await db.league.findMany({
       select: { name: true, updatedAt: true }
     });
-    playerPages = players.map((p: any) => ({
-      url: `${baseUrl}/player/${toSlug(p.name)}`,
-      lastModified: p.updatedAt || now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
-    }));
+    
+    if (leagues.length > 0) {
+      leaguePages = leagues.map((l: any) => ({
+        url: `${baseUrl}/league/${toSlug(l.name)}`,
+        lastModified: l.updatedAt || now,
+        changeFrequency: 'daily' as const,
+        priority: 0.8,
+      }));
+    } else {
+      throw new Error('No leagues in DB');
+    }
   } catch (err) {
-    console.error('[Sitemap] Player fetch failed:', err);
+    leaguePages = MAJOR_LEAGUES.map((l) => ({
+      url: `${baseUrl}/league/${toSlug(l.name)}`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.8,
+    }));
   }
 
-  // 4. Dynamic Teams (Limit to top 1000)
+  // 3. Dynamic Teams (Top 5,000)
   let teamPages: any[] = [];
   try {
     const teams = await db.team.findMany({
-      take: 1000,
+      take: 5000,
       orderBy: { updatedAt: 'desc' },
       select: { name: true, updatedAt: true }
     });
@@ -85,5 +86,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('[Sitemap] Team fetch failed:', err);
   }
 
-  return [...staticPages, ...leaguePages, ...playerPages, ...teamPages];
+  // 4. Dynamic Players (Top 20,000)
+  let playerPages: any[] = [];
+  try {
+    const players = await db.player.findMany({
+      take: 20000,
+      orderBy: { updatedAt: 'desc' },
+      select: { name: true, updatedAt: true }
+    });
+    playerPages = players.map((p: any) => ({
+      url: `${baseUrl}/player/${toSlug(p.name)}`,
+      lastModified: p.updatedAt || now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    }));
+  } catch (err) {
+    console.error('[Sitemap] Player fetch failed:', err);
+  }
+
+  return [...staticPages, ...leaguePages, ...teamPages, ...playerPages];
 }

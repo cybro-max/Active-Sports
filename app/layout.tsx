@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     apple: '/favicon.png',
   },
   verification: {
-    google: 'google-site-verification-code', // Replace with your actual code
+    google: 'mjpxIEvKUXUZFLb4dFO2M8nejtrOxGNBU-5fyQarpcE',
   },
   manifest: '/manifest.json',
   appleWebApp: {
