@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const team = teams[0]?.team;
   return {
     title: team
-      ? `${team.name} — FIFA World Cup 2026 | ActiveSports`
+      ? `${team.name} — FIFA World Cup 2026`
       : 'National Team — World Cup 2026',
     description: team
       ? `${team.name} World Cup 2026 profile: squad, group standing, fixtures, form, and top scorers.`

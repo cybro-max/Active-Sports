@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatMatchDate, formatMatchTime, getStatusLabel } from '@/lib/utils';
 import { LiveMatchProvider, useMatchLive } from './LiveMatchProvider';
-import PredictionWidget from './PredictionWidget';
 import MoreMatchesSection from './MoreMatchesSection';
 import OddsTable from './OddsTable';
 import { toSlug, matchSlug } from '@/lib/slug';
@@ -23,7 +22,6 @@ interface MatchContentProps {
   oddsData: any;
   liveOddsData: any[];
   isLive: boolean;
-  existingPrediction: any;
   moreLive: Fixture[];
   moreToday: Fixture[];
   slug: string;
@@ -91,17 +89,6 @@ export default function MatchContent(props: MatchContentProps) {
             <LineupView lineups={props.lineups} />
           </section>
 
-          {/* Prediction Widget */}
-          {!isFinished && (
-            <PredictionWidget
-              fixtureId={fixtureId}
-              homeTeam={teams.home.name}
-              awayTeam={teams.away.name}
-              existingPrediction={props.existingPrediction}
-              isResolved={props.existingPrediction?.resolved ?? false}
-              matchStatus={f.status.short}
-            />
-          )}
         </div>
 
         {/* Sidebar - 1/3 */}
@@ -269,19 +256,19 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
       <div className="relative px-8 py-12">
         <div className="flex flex-col items-center">
           {/* League Info */}
-          <div className="flex items-center gap-2 mb-8 bg-white/5 px-4 py-1.5 rounded-full border border-white/5">
-            <Image src={f.league.logo} alt={f.league.name} width={16} height={16} className="opacity-80" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">{f.league.name}</span>
+          <div className="flex items-center gap-2 mb-6 sm:mb-8 bg-white/5 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border border-white/5">
+            <Image src={f.league.logo} alt={f.league.name} width={14} height={14} className="opacity-80" />
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-white/40">{f.league.name}</span>
           </div>
 
           <div className="w-full flex items-center justify-between max-w-4xl mx-auto">
             {/* Home Team */}
             <div className="flex-1 flex flex-col items-center text-center">
-              <div className="w-24 h-24 sm:w-32 sm:h-32 relative mb-6 group">
+              <div className="w-16 h-16 sm:w-32 sm:h-32 relative mb-4 sm:mb-6 group">
                 <div className="absolute inset-0 bg-white/5 rounded-full scale-110 group-hover:scale-125 transition-transform duration-500 blur-xl opacity-0 group-hover:opacity-100" />
                 <Image src={f.teams.home.logo} alt={f.teams.home.name} fill className="object-contain relative drop-shadow-2xl" />
               </div>
-              <h2 className="text-lg sm:text-xl font-black text-white tracking-tight uppercase max-w-[160px] leading-tight">{f.teams.home.name}</h2>
+              <h2 className="text-xs sm:text-xl font-black text-white tracking-tight uppercase max-w-[80px] sm:max-w-[160px] leading-tight">{f.teams.home.name}</h2>
             </div>
 
             {/* Score Center */}
@@ -292,7 +279,7 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
                     key={f.goals.home}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-6xl sm:text-8xl font-black font-display tracking-tighter text-white"
+                    className="text-4xl sm:text-8xl font-black font-display tracking-tighter text-white"
                   >
                     {f.goals.home ?? 0}
                   </motion.span>
@@ -303,7 +290,7 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
                     key={f.goals.away}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-6xl sm:text-8xl font-black font-display tracking-tighter text-white"
+                    className="text-4xl sm:text-8xl font-black font-display tracking-tighter text-white"
                   >
                     {f.goals.away ?? 0}
                   </motion.span>
@@ -312,16 +299,16 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
 
               {/* Status Badge */}
               <div className="flex flex-col items-center">
-                <div className={`px-4 py-1.5 rounded-xl border flex items-center gap-2 ${
+                <div className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border flex items-center gap-2 ${
                   isLive ? 'bg-[var(--brand)]/10 border-[var(--brand)]/20' : 'bg-white/5 border-white/10'
                 }`}>
                   {isLive && (
-                    <span className="relative flex h-2 w-2">
+                    <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--brand)] opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--brand)]" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-[var(--brand)]" />
                     </span>
                   )}
-                  <span className={`text-[10px] font-black uppercase tracking-widest ${
+                  <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${
                     isLive ? 'text-[var(--brand)]' : 'text-white/60'
                   }`}>
                     {f.fixture.status.short === 'NS' 
@@ -337,11 +324,11 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
 
             {/* Away Team */}
             <div className="flex-1 flex flex-col items-center text-center">
-              <div className="w-24 h-24 sm:w-32 sm:h-32 relative mb-6 group">
+              <div className="w-16 h-16 sm:w-32 sm:h-32 relative mb-4 sm:mb-6 group">
                 <div className="absolute inset-0 bg-white/5 rounded-full scale-110 group-hover:scale-125 transition-transform duration-500 blur-xl opacity-0 group-hover:opacity-100" />
                 <Image src={f.teams.away.logo} alt={f.teams.away.name} fill className="object-contain relative drop-shadow-2xl" />
               </div>
-              <h2 className="text-lg sm:text-xl font-black text-white tracking-tight uppercase max-w-[160px] leading-tight">{f.teams.away.name}</h2>
+              <h2 className="text-xs sm:text-xl font-black text-white tracking-tight uppercase max-w-[80px] sm:max-w-[160px] leading-tight">{f.teams.away.name}</h2>
             </div>
           </div>
         </div>

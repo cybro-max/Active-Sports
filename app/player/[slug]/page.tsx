@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { getPlayer, getTrophies, getTransfers, getInjuries, getSidelined, getPlayersSearch, getCoach, CURRENT_SEASON, getTopScorers } from '@/lib/apifootball';
 import AsyncSection from '@/components/AsyncSection';
-import { generatePersonLD } from '@/lib/json-ld';
+import { generatePersonLD, generateBreadcrumbLD } from '@/lib/json-ld';
 import { SkeletonGrid } from '@/components/Skeleton';
 import { captureCatch } from '@/lib/utils';
 import { getPlayerIdsLite, isFullBuild } from '@/lib/build-params';
@@ -339,13 +339,6 @@ async function PlayerAboutSection({ player, teamName }: { player: any, teamName:
       <p className="text-sm leading-relaxed text-[var(--text-body)] italic opacity-80">
         "{about}"
       </p>
-      <div className="mt-4 pt-4 border-t border-[var(--border)]">
-         <p className="text-[10px] uppercase font-black tracking-widest text-[var(--text-muted)] mb-1">SEO Insights</p>
-         <p className="text-[11px] text-[var(--text-muted)] leading-normal">
-           This profile provides comprehensive career statistics, transfer history, and medical reports for {player.name}. 
-           Last updated for the {CURRENT_SEASON} season.
-         </p>
-      </div>
     </section>
   );
 }
@@ -499,11 +492,20 @@ export default async function PlayerPage({ params, searchParams }: Props) {
         url: `https://activesports.live/team/${toSlug(mainStats.team.name)}` 
       } 
     }),
+    height: player.height,
+    weight: player.weight,
   });
+
+  const breadcrumbLd = generateBreadcrumbLD([
+    { name: 'Home', item: 'https://activesports.live' },
+    { name: 'Players', item: 'https://activesports.live/players' },
+    { name: player.name, item: `https://activesports.live/player/${param}` },
+  ]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
       <JsonLd data={playerLD} />
+      <JsonLd data={breadcrumbLd} />
 
       <div className="card mb-8 fade-up border-b-2 border-b-[var(--brand)]/20">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8">

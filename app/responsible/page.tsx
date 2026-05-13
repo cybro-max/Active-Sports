@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Responsible Play | ActiveSports',
+  title: 'Responsible Play',
   description: 'ActiveSports promotes responsible engagement with football predictions and betting-related content. Learn about our commitment to user well-being.',
 };
 

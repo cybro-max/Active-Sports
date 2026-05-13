@@ -3,8 +3,8 @@ import { Users, MessageSquare, Trophy, Globe, ChevronRight, Zap } from 'lucide-r
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Community | ActiveSports',
-  description: 'Join the ActiveSports community. Connect with football fans worldwide, share predictions, compete on leaderboards, and discuss the beautiful game.',
+  title: 'Community',
+  description: 'Join the ActiveSports community. Connect with football fans worldwide, explore stats, and discuss the beautiful game.',
 };
 
 export default function CommunityPage() {
@@ -41,21 +41,21 @@ export default function CommunityPage() {
           {[
             {
               step: '01',
-              title: 'Join Prediction Battles',
-              desc: 'Test your football knowledge against fans worldwide. Predict scores, earn PRO Points, and climb the global rankings to prove you are the ultimate oracle.',
-              href: '/predictions',
-            },
-            {
-              step: '02',
-              title: 'React to Live Matches',
-              desc: 'Drop emoji reactions and comments on live matches. Share the agony and ecstasy with fans who feel exactly what you feel in real-time.',
+              title: 'Follow Live Scores',
+              desc: 'Stay on top of every match with real-time scores, stats, lineups, and events across all major leagues and competitions worldwide.',
               href: '/',
             },
             {
-              step: '03',
-              title: 'Climb the Leaderboard',
-              desc: 'Accuracy builds reputation. Chain winning streaks, unlock badges, and earn your place among the most respected predictors in the community.',
+              step: '02',
+              title: 'Explore Stats & Standings',
+              desc: 'Dive deep into team standings, player stats, top scorers, and head-to-head records powered by live API data from global football leagues.',
               href: '/leaderboard',
+            },
+            {
+              step: '03',
+              title: 'Join the Conversation',
+              desc: 'Connect with fans from around the world. Share your passion for football and discover new perspectives on the beautiful game.',
+              href: '/',
             },
           ].map((item, i) => (
             <Link key={i} href={item.href} className="card p-8 space-y-6 group">
@@ -82,9 +82,9 @@ export default function CommunityPage() {
         <div className="card p-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { icon: Users, value: '12,400+', label: 'Active Members' },
-            { icon: MessageSquare, value: '840K+', label: 'Predictions Made' },
-            { icon: Trophy, value: '2.1M+', label: 'PRO Points Awarded' },
-            { icon: Globe, value: '190+', label: 'Countries' },
+            { icon: MessageSquare, value: '50K+', label: 'Daily Fixtures' },
+            { icon: Trophy, value: '190+', label: 'Countries Covered' },
+            { icon: Globe, value: '100+', label: 'Leagues' },
           ].map((stat, i) => (
             <div key={i} className="space-y-3">
               <div className="w-12 h-12 rounded-xl bg-[var(--brand-dim)] border border-[var(--brand)]/20 flex items-center justify-center mx-auto">
@@ -110,8 +110,8 @@ export default function CommunityPage() {
             <p className="text-[var(--text-muted)] text-lg leading-relaxed">
               Sign in to start making predictions, earning points, and connecting with the global football community.
             </p>
-            <Link href="/predictions" className="card px-8 py-4 bg-[var(--brand)] text-black font-black inline-flex items-center gap-3 hover:scale-105 transition-all shadow-[0_0_20px_rgba(33,150,243,0.3)]">
-              Start Predicting <ChevronRight className="w-5 h-5" />
+            <Link href="/leaderboard" className="card px-8 py-4 bg-[var(--brand)] text-black font-black inline-flex items-center gap-3 hover:scale-105 transition-all shadow-[0_0_20px_rgba(33,150,243,0.3)]">
+              View Standings <ChevronRight className="w-5 h-5" />
             </Link>
           </div>
         </div>

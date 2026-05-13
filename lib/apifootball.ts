@@ -14,6 +14,7 @@ import { Redis } from '@upstash/redis';
 import axios from 'axios';
 import * as Sentry from '@sentry/nextjs';
 import { DEFAULT_TIMEZONE, getTodayDate } from '@/lib/utils';
+import { syncTeam, syncSquad, syncPlayer, syncSearchResults } from './sync';
 
 // ─── Redis client (null-safe for local dev without Upstash) ──────────────────
 const redis =
@@ -210,6 +211,10 @@ async function apiFetch<T>(
     // Use provided TTL or priority-based TTL
     const effectiveTtl = ttl || PRIORITY_TTL[priority];
     await setCache(cacheKey, result, effectiveTtl);
+
+    // 4. Background Sync with structured DB models
+    void handleAutoSync(endpoint, params, result);
+
     return result;
   } catch (error: unknown) {
     Sentry.captureException(error, {
@@ -224,6 +229,39 @@ async function apiFetch<T>(
       throw new Error(`API Error ${error.response?.status}: ${endpoint}`);
     }
     throw error;
+  }
+}
+
+/**
+ * Intelligent background sync to structured DB models.
+ * Operates non-blockingly to ensure fast API responses.
+ */
+async function handleAutoSync(endpoint: string, params: any, result: any) {
+  try {
+    if (!result || (Array.isArray(result) && result.length === 0)) return;
+
+    if (endpoint === '/players' && params.team && (params.season || params.squad)) {
+      // Squad/Team players sync
+      await syncSquad(Number(params.team), { team: result[0]?.statistics?.[0]?.team, players: result.map((r: any) => ({
+        id: r.player.id,
+        name: r.player.name,
+        age: r.player.age,
+        number: r.statistics?.[0]?.games?.number,
+        position: r.statistics?.[0]?.games?.position,
+        photo: r.player.photo
+      }))});
+    } else if (endpoint === '/players' && params.id) {
+      // Single player detail sync
+      await syncPlayer(result[0]);
+    } else if (endpoint === '/teams' && params.id) {
+      // Single team detail sync
+      await syncTeam(result[0]);
+    } else if ((endpoint === '/players' || endpoint === '/teams') && params.search) {
+      // Search results sync
+      await syncSearchResults(result);
+    }
+  } catch (err) {
+    console.error(`[AFS AutoSync] Failed for ${endpoint}:`, err);
   }
 }
 
@@ -705,6 +743,7 @@ export interface StandingsResponse {
     id: number;
     name: string;
     logo: string;
+    country: string;
     standings: Standing[][];
   };
 }

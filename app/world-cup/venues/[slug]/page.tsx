@@ -25,13 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const oldVenue = WC_VENUES.find((v) => v.id === param);
     if (!oldVenue) return { title: 'Venue Not Found' };
     return {
-      title: `${oldVenue.name} — FIFA World Cup 2026 Venue | ActiveSports`,
+      title: `${oldVenue.name} — FIFA World Cup 2026 Venue`,
       description: `${oldVenue.name} in ${oldVenue.city}, ${oldVenue.country}. Capacity ${oldVenue.capacity.toLocaleString()}. Hosting ${oldVenue.matchesHosted} World Cup 2026 matches.`,
       alternates: { canonical: `https://activesports.live/world-cup/venues/${toSlug(oldVenue.name)}` },
     };
   }
   return {
-    title: `${venue.name} — FIFA World Cup 2026 Venue | ActiveSports`,
+    title: `${venue.name} — FIFA World Cup 2026 Venue`,
     description: `${venue.name} in ${venue.city}, ${venue.country}. Capacity ${venue.capacity.toLocaleString()}. Hosting ${venue.matchesHosted} World Cup 2026 matches.`,
     alternates: { canonical: `https://activesports.live/world-cup/venues/${param}` },
   };

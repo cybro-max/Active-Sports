@@ -87,6 +87,7 @@ a, button, [role="button"], input[type="submit"], input[type="button"], .tab-ite
   line-height: 1;
   background: linear-gradient(to bottom, #ffffff 50%, rgba(255, 255, 255, 0.4) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -375,10 +376,7 @@ a:hover {
 .status-pst   { color: var(--danger); }
 
 /* ── Dark Mode (Override existing to be purely dark/neutral) ──── */
-.dark,
-:root.dark {
-  /* Retain our midnight pitch tokens */
-}
+/* Dark mode overrides are handled by default midnight pitch tokens */
 
 /* Force dark theme for all layout */
 @media (prefers-color-scheme: light) {

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     "Today's football match odds across major leagues. Compare 1X2 bookmaker odds for all matches. Updated every 3 minutes.",
   openGraph: {
-    title: 'Odds Comparison Hub | ActiveSports',
+    title: 'Odds Comparison Hub',
     description: 'Compare real-time 1X2 odds across major bookmakers for every match.',
   },
 };
@@ -115,8 +115,8 @@ export default async function OddsPage({ searchParams }: PageProps) {
                 <Link href="#odds-live" className="card px-8 py-4 bg-[var(--brand)] text-black font-black flex items-center gap-3 hover:scale-105 transition-all shadow-[0_0_20px_rgba(33,150,243,0.3)]">
                   View Live Odds <ChevronRight className="w-5 h-5" />
                 </Link>
-                <Link href="/predictions" className="card px-8 py-4 bg-[var(--bg-surface)] text-white font-bold border border-[var(--border)] flex items-center gap-3 hover:bg-[var(--bg-hover)] transition-all">
-                  <Target className="w-5 h-5" /> Make Predictions
+                <Link href="/leaderboard" className="card px-8 py-4 bg-[var(--bg-surface)] text-white font-bold border border-[var(--border)] flex items-center gap-3 hover:bg-[var(--bg-hover)] transition-all">
+                  <Trophy className="w-5 h-5" /> View Leaderboard
                 </Link>
               </div>
 
@@ -450,14 +450,11 @@ export default async function OddsPage({ searchParams }: PageProps) {
               </span>
             </h2>
             <p className="text-[var(--text-muted)] text-lg leading-relaxed">
-              Put your football insights to the test. Make predictions, compete on the global leaderboard, and prove you know the game better than anyone.
+              Stay informed with the latest odds movements across all major leagues and make smarter football decisions.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Link href="/predictions" className="card px-8 py-4 bg-[var(--brand)] text-black font-black flex items-center gap-3 hover:scale-105 transition-all shadow-[0_0_20px_rgba(33,150,243,0.3)]">
-                Start Predicting <ChevronRight className="w-5 h-5" />
-              </Link>
-              <Link href="/leaderboard" className="card px-8 py-4 bg-[var(--bg-surface)] text-white font-bold border border-[var(--border)] flex items-center gap-3 hover:bg-[var(--bg-hover)] transition-all">
-                <Trophy className="w-5 h-5" /> View Rankings
+              <Link href="/leaderboard" className="card px-8 py-4 bg-[var(--brand)] text-black font-black flex items-center gap-3 hover:scale-105 transition-all shadow-[0_0_20px_rgba(33,150,243,0.3)]">
+                <Trophy className="w-5 h-5" /> View Leaderboard
               </Link>
             </div>
           </div>

@@ -20,10 +20,10 @@ export default function LiveMatchRow({ fixture: f, timezone }: LiveMatchRowProps
   return (
     <Link 
       href={`/match/${slug}`}
-      className="group relative flex items-center gap-4 p-3 sm:p-4 bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-[var(--brand)]/30 transition-all rounded-xl"
+      className="group relative flex items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-[var(--brand)]/30 transition-all rounded-xl"
     >
       {/* Time / Status */}
-      <div className="w-16 sm:w-20 flex flex-col items-center justify-center shrink-0">
+      <div className="w-14 sm:w-20 flex flex-col items-center justify-center shrink-0">
         <span className={`text-[11px] font-black font-mono tracking-tight ${
           isLive ? 'text-red-400' : isNS ? 'text-white/60' : 'text-[var(--text-muted)]'
         }`}>
@@ -38,45 +38,41 @@ export default function LiveMatchRow({ fixture: f, timezone }: LiveMatchRowProps
       </div>
 
       {/* Teams Container */}
-      <div className="flex-1 flex items-center justify-between gap-4">
+      <div className="flex-1 flex items-center justify-between gap-2 sm:gap-4">
         {/* Home */}
-        <div className="flex-1 flex items-center justify-end gap-3 min-w-0">
-          <span className={`text-xs sm:text-sm font-bold truncate text-right ${
-            isFinished && f.teams.home.winner === false ? 'text-[var(--text-muted)]' : 'text-white'
-          }`}>
-            {f.teams.home.name}
-          </span>
-          <img src={f.teams.home.logo} alt="" className="w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0" />
+        <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 min-w-0">
+            <span className={`text-[10px] sm:text-[11px] font-bold tracking-tight uppercase truncate w-full text-right ${isFinished && f.teams.home.winner === false ? 'text-[var(--text-muted)]' : 'text-white'}`}>
+              {f.teams.home.name}
+            </span>
+          <img src={f.teams.home.logo} alt={`${f.teams.home.name} logo`} className="w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0" />
         </div>
 
         {/* Score / VS */}
-        <div className="flex flex-col items-center justify-center min-w-[60px] sm:min-w-[80px]">
+        <div className="flex flex-col items-center justify-center min-w-[40px] sm:min-w-[80px]">
           {isNS ? (
             <span className="text-[10px] font-black uppercase tracking-widest text-white/20">VS</span>
           ) : (
-            <div className="flex items-center gap-2">
-              <span className={`text-lg sm:text-xl font-black tabular-nums ${
+            <div className="flex items-center gap-1 sm:gap-2">
+              <span className={`text-sm sm:text-xl font-black tabular-nums ${
                 f.teams.home.winner ? 'text-[var(--brand)]' : 'text-white'
               }`}>{f.goals.home ?? 0}</span>
               <span className="text-white/10 text-xs font-black">–</span>
-              <span className={`text-lg sm:text-xl font-black tabular-nums ${
+              <span className={`text-sm sm:text-xl font-black tabular-nums ${
                 f.teams.away.winner ? 'text-[var(--brand)]' : 'text-white'
               }`}>{f.goals.away ?? 0}</span>
             </div>
           )}
           {f.fixture.status.short === 'HT' && (
-             <span className="text-[9px] font-black uppercase text-white/40 tracking-widest mt-0.5">Half Time</span>
+             <span className="text-[9px] font-black uppercase text-white/40 tracking-widest mt-0.5">HT</span>
           )}
         </div>
 
         {/* Away */}
-        <div className="flex-1 flex items-center justify-start gap-3 min-w-0">
-          <img src={f.teams.away.logo} alt="" className="w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0" />
-          <span className={`text-xs sm:text-sm font-bold truncate text-left ${
-            isFinished && f.teams.away.winner === false ? 'text-[var(--text-muted)]' : 'text-white'
-          }`}>
-            {f.teams.away.name}
-          </span>
+        <div className="flex-1 flex items-center justify-start gap-2 sm:gap-3 min-w-0">
+          <img src={f.teams.away.logo} alt={`${f.teams.away.name} logo`} className="w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0" />
+            <span className={`text-[10px] sm:text-[11px] font-bold tracking-tight uppercase truncate w-full text-left ${isFinished && f.teams.away.winner === false ? 'text-[var(--text-muted)]' : 'text-white'}`}>
+              {f.teams.away.name}
+            </span>
         </div>
       </div>
 

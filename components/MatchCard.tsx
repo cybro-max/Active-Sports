@@ -52,13 +52,13 @@ export default function MatchCard({ fixture, compact = false, timezone }: MatchC
       {/* Main Content */}
       <div className="space-y-5 relative z-10">
         {/* Teams with integrated scores */}
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
           {/* Home Team */}
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="relative group-hover:scale-110 transition-transform duration-300">
                <Image src={teams.home.logo} alt={teams.home.name} width={40} height={40} className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]" />
             </div>
-            <span className={`text-[11px] font-bold tracking-tight uppercase ${isFinished && teams.home.winner === false ? 'text-[var(--text-muted)]' : 'text-white'}`}>
+            <span className={`text-[10px] sm:text-[11px] font-bold tracking-tight uppercase truncate w-full ${isFinished && teams.home.winner === false ? 'text-[var(--text-muted)]' : 'text-white'}`}>
               {teams.home.name}
             </span>
           </div>
@@ -70,12 +70,12 @@ export default function MatchCard({ fixture, compact = false, timezone }: MatchC
                 {formatMatchTime(f.date, timezone)}
               </span>
             ) : (
-              <div className="flex items-center gap-2">
-                <span className={`text-2xl font-display font-black ${teams.home.winner ? 'text-[var(--brand)]' : 'text-white'}`}>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className={`text-xl sm:text-2xl font-display font-black ${teams.home.winner ? 'text-[var(--brand)]' : 'text-white'}`}>
                   {goals.home ?? 0}
                 </span>
                 <span className="text-white/20 text-xs font-black">-</span>
-                <span className={`text-2xl font-display font-black ${teams.away.winner ? 'text-[var(--brand)]' : 'text-white'}`}>
+                <span className={`text-xl sm:text-2xl font-display font-black ${teams.away.winner ? 'text-[var(--brand)]' : 'text-white'}`}>
                   {goals.away ?? 0}
                 </span>
               </div>
@@ -87,7 +87,7 @@ export default function MatchCard({ fixture, compact = false, timezone }: MatchC
             <div className="relative group-hover:scale-110 transition-transform duration-300">
                <Image src={teams.away.logo} alt={teams.away.name} width={40} height={40} className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]" />
             </div>
-            <span className={`text-[11px] font-bold tracking-tight uppercase ${isFinished && teams.away.winner === false ? 'text-[var(--text-muted)]' : 'text-white'}`}>
+            <span className={`text-[10px] sm:text-[11px] font-bold tracking-tight uppercase truncate w-full ${isFinished && teams.away.winner === false ? 'text-[var(--text-muted)]' : 'text-white'}`}>
               {teams.away.name}
             </span>
           </div>

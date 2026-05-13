@@ -20,7 +20,7 @@ import type { Metadata } from 'next';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'FIFA World Cup 2026 — Hub | ActiveSports',
+  title: 'FIFA World Cup 2026 — Hub',
   description:
     'Live scores, groups, knockout bracket, top scorers, outright odds, and more for FIFA World Cup 2026. USA · Canada · Mexico. 48 teams, 104 matches.',
   openGraph: {

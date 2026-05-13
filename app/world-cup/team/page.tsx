@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import { toSlug } from '@/lib/slug';
 
 export const metadata: Metadata = {
-  title: 'FIFA World Cup 2026 Teams — 48 Nations | ActiveSports',
+  title: 'FIFA World Cup 2026 Teams — 48 Nations',
   description: 'Explore the 48 nations competing in the 2026 FIFA World Cup. Team profiles, tactical analysis, and road to qualification for USA, Mexico, Canada, and more.',
 };
 

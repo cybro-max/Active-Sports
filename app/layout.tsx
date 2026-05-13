@@ -19,12 +19,25 @@ const anybody = Anybody({ subsets: ['latin'], variable: '--font-anybody' });
 export const metadata: Metadata = {
   metadataBase: new URL('https://activesports.live'),
   title: {
-    default: 'ActiveSports — Live Scores, Fixtures & Stats',
+    default: 'ActiveSports — Live Scores, Fixtures & Football Intelligence',
     template: '%s | ActiveSports',
   },
   description:
-    'Real-time football scores, live fixtures, standings, player stats and odds. Your ultimate sports hub for Premier League, Champions League, La Liga, and FIFA World Cup 2026.',
-  keywords: ['football scores', 'live scores', 'Premier League', 'Champions League', 'World Cup 2026', 'fixtures', 'standings'],
+    'The next-gen football platform. Real-time scores, live match fixtures, league standings, player stats, and AI-powered tactical insights for every major competition.',
+  keywords: [
+    'football live scores', 
+    'soccer results', 
+    'Premier League stats', 
+    'Champions League fixtures', 
+    'World Cup 2026 schedule', 
+    'football tactical analysis', 
+    'live match commentary',
+    'league standings',
+    'player performance stats'
+  ],
+  alternates: {
+    canonical: '/',
+  },
   robots: {
     index: true,
     follow: true,

@@ -25,7 +25,7 @@ export default function TopLeaguesFocus() {
 
           <div className="relative z-10">
             <Image src={league.logo} alt={league.name} width={48} height={48} className="mb-4" />
-            <h3 className="text-2xl font-black text-white mb-1 group-hover:text-[var(--brand)] transition-colors uppercase tracking-tight">{league.name}</h3>
+            <h3 className="text-lg font-black text-white mb-1 group-hover:text-[var(--brand)] transition-colors uppercase tracking-tight">{league.name}</h3>
             <p className="text-xs text-[var(--text-muted)] mb-6 font-medium uppercase tracking-widest">{league.country}</p>
             
             <div className="flex items-center gap-4 text-[10px] font-bold">

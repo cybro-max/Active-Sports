@@ -8,13 +8,13 @@ import {
   getFixtureRounds, getSeasons,
   CURRENT_SEASON
 } from '@/lib/apifootball';
-import { ClipboardList, Calendar, Activity, ChevronDown } from 'lucide-react';
+import { ClipboardList, Calendar, Activity, ChevronDown, Users, Trophy, Flag, Clock, Award } from 'lucide-react';
 import StandingsTable from '@/components/StandingsTable';
 import MatchCard from '@/components/MatchCard';
 import PlayerStatsTable from '@/components/PlayerStatsTable';
 import { SkeletonTable, SkeletonFixtureList } from '@/components/Skeleton';
 import AsyncSection from '@/components/AsyncSection';
-import { generateSportsOrgLD } from '@/lib/json-ld';
+import { generateSportsOrgLD, generateBreadcrumbLD } from '@/lib/json-ld';
 import { captureCatch } from '@/lib/utils';
 import { generateLeagueOverview } from '@/lib/content-generator';
 import { MAJOR_LEAGUES } from '@/config/leagues';
@@ -297,32 +297,166 @@ export default async function LeaguePage({ params, searchParams }: Props) {
     description: `${leagueInfo.league.name} standings, top scorers, fixtures and results.`,
   });
 
+  const breadcrumbLd = generateBreadcrumbLD([
+    { name: 'Home', item: 'https://activesports.live' },
+    { name: 'Leagues', item: 'https://activesports.live/leagues' },
+    { name: leagueInfo.league.name, item: `https://activesports.live/league/${param}` },
+  ]);
+
+  const [standingsData, scorersRes, assistsRes, currentRoundRes] = await Promise.all([
+    captureCatch(getStandings(leagueId, selectedSeason), []),
+    captureCatch(getTopScorers(leagueId, selectedSeason), []),
+    captureCatch(getTopAssists(leagueId, selectedSeason), []),
+    captureCatch(getFixtureRounds(leagueId, selectedSeason, true), []),
+  ]);
+
+  const standings = standingsData[0]?.league?.standings ?? [];
+  const allTeams = standings.flat();
+  const numTeams = allTeams.length;
+  const leader = allTeams.find(t => t.rank === 1);
+  const topScorer = scorersRes?.[0];
+  const topAssistant = assistsRes?.[0];
+  const currentRound = currentRoundRes?.[0];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
 
-      <div className="flex items-center gap-5 mb-2 fade-up">
-        <Image
-          src={leagueInfo.league.logo}
-          alt={leagueInfo.league.name}
-          width={64}
-          height={64}
-          className="rounded-[12px]"
-          style={{ background: 'var(--bg-subtle)', padding: 8 }}
-        />
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--primary)]">
-            {leagueInfo.league.name}
-          </h1>
-          <p className="flex items-center gap-2 text-sm mt-1 text-[var(--text-muted)]">
-            {leagueInfo.country.flag && (
-              <Image src={leagueInfo.country.flag} alt={leagueInfo.country.name} width={16} height={12} />
-            )}
-            {leagueInfo.country.name} &middot; {leagueInfo.league.type}
-          </p>
+      {/* Cinematic Hero Section */}
+      <div className="relative overflow-hidden rounded-[32px] mb-10 card border-0 group fade-up">
+        {/* Background Layer */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/media/hero/stadium.png" 
+            alt="Background" 
+            fill 
+            className="object-cover opacity-20 grayscale scale-105 group-hover:scale-100 transition-transform duration-1000"
+          />
+          <div className="absolute inset-0 bg-gradient-to-tr from-[var(--bg-base)] via-[var(--bg-base)]/90 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-base)]/50 to-[var(--bg-base)]" />
+        </div>
+
+        <div className="relative z-10 p-6 sm:p-10 lg:p-12">
+          <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+            {/* Logo Wrapper */}
+            <div className="relative shrink-0">
+              <div className="absolute -inset-4 bg-[var(--brand)]/10 blur-2xl rounded-full opacity-50" />
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-4 sm:p-6 shadow-2xl flex items-center justify-center">
+                <Image
+                  src={leagueInfo.league.logo}
+                  alt={leagueInfo.league.name}
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Info Section */}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-3 mb-3">
+                <span className="px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-[10px] font-black uppercase tracking-wider border border-[var(--brand)]/20 backdrop-blur-sm">
+                  {leagueInfo.league.type}
+                </span>
+                {leagueInfo.country.name !== 'World' && (
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                    {leagueInfo.country.flag && (
+                      <Image src={leagueInfo.country.flag} alt={leagueInfo.country.name} width={16} height={12} className="rounded-[2px]" />
+                    )}
+                    <span className="text-xs font-bold text-[var(--text-muted)]">
+                      {leagueInfo.country.name}
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                  <Clock className="w-3 h-3 text-[var(--text-muted)]" />
+                  <span className="text-xs font-bold text-[var(--text-muted)]">
+                    Season {selectedSeason}
+                  </span>
+                </div>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight mb-6 leading-[1.1]">
+                {leagueInfo.league.name}
+              </h1>
+
+              {/* Quick Stats Grid */}
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-4 sm:gap-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                    <Users className="w-5 h-5 text-[var(--brand)]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Teams</p>
+                    <p className="text-lg font-bold text-white leading-none">{numTeams || '--'}</p>
+                  </div>
+                </div>
+
+                {leader && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                      <Trophy className="w-5 h-5 text-[var(--warning)]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Leader</p>
+                      <p className="text-lg font-bold text-white leading-none truncate max-w-[120px] sm:max-w-none">
+                        {leader.team.name}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {topScorer && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                      <Award className="w-5 h-5 text-[var(--accent)]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Top Scorer</p>
+                      <p className="text-lg font-bold text-white leading-none truncate max-w-[120px] sm:max-w-none">
+                        {topScorer.player.name} ({topScorer.statistics[0].goals.total})
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {topAssistant && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                      <Activity className="w-5 h-5 text-[var(--brand)]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Top Assists</p>
+                      <p className="text-lg font-bold text-white leading-none truncate max-w-[120px] sm:max-w-none">
+                        {topAssistant.player.name} ({topAssistant.statistics[0].goals.assists})
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {currentRound && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                      <Flag className="w-5 h-5 text-[var(--success)]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Current Round</p>
+                      <p className="text-lg font-bold text-white leading-none truncate max-w-[120px] sm:max-w-none">
+                        {currentRound.replace('Regular Season - ', '')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

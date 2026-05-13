@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { letter } = await params;
   return {
-    title: `Players — ${letter.toUpperCase()} | ActiveSports`,
+    title: `Players — ${letter.toUpperCase()}`,
     description: `Browse football players starting with ${letter.toUpperCase()}. View stats, profile, trophies and more.`,
     alternates: { canonical: `https://activesports.live/players/${letter}` },
   };

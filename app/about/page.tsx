@@ -3,7 +3,7 @@ import { Trophy, Globe, Zap, Users, Target, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Us | ActiveSports',
+  title: 'About Us',
   description: 'Learn about ActiveSports — the ultimate platform for real-time football intelligence, AI-powered insights, and community-driven predictions.',
 };
 

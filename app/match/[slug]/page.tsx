@@ -6,11 +6,10 @@ import {
   getLiveFixtures, getTodayFixtures, getHeadToHead
 } from '@/lib/apifootball';
 import { captureCatch } from '@/lib/utils';
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
 import type { Metadata } from 'next';
 import { toSlug, matchSlug } from '@/lib/slug';
 import MatchContent from '@/components/MatchContent';
+import { generateSportsEventLD, generateBreadcrumbLD } from '@/lib/json-ld';
 
 export const revalidate = 60;
 
@@ -21,17 +20,34 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const param = (await params).slug;
-  const fixtureId = Number(param);
-  if (!fixtureId) return { title: 'Match', robots: { index: false } };
+  const fixtureId = await resolveFixtureId(param);
+  
+  if (!fixtureId) return { title: 'Match Not Found', robots: { index: false } };
+  
   const fixtures = await captureCatch(getFixtureById(fixtureId), []);
-  if (!fixtures.length) return { title: 'Match', robots: { index: false } };
+  if (!fixtures.length) return { title: 'Match Not Found', robots: { index: false } };
+  
   const f = fixtures[0];
-  const homeSlug = toSlug(f.teams.home.name);
-  const awaySlug = toSlug(f.teams.away.name);
+  const isLive = ['1H', '2H', 'HT', 'ET', 'P'].includes(f.fixture.status.short);
+  const homeName = f.teams.home.name;
+  const awayName = f.teams.away.name;
+  
+  const title = isLive 
+    ? `LIVE: ${homeName} ${f.goals.home ?? 0}-${f.goals.away ?? 0} ${awayName} | Score & Stats` 
+    : `${homeName} vs ${awayName} | Match Preview, Score & Lineups`;
+
   return {
-    title: `${f.teams.home.name} vs ${f.teams.away.name}`,
-    description: `Live score, stats, lineups and events for ${f.teams.home.name} vs ${f.teams.away.name}`,
-    alternates: { canonical: `https://activesports.live/match/${homeSlug}-vs-${awaySlug}` },
+    title,
+    description: `Real-time ${f.league.name} coverage: ${homeName} vs ${awayName}. Live scores, detailed statistics, starting lineups, and tactical analysis.`,
+    keywords: [`${homeName} vs ${awayName}`, `${homeName} live score`, `${awayName} stats`, f.league.name, 'football results'],
+    openGraph: {
+      title,
+      description: `Track ${homeName} vs ${awayName} live on ActiveSports.`,
+      images: [f.league.logo],
+    },
+    alternates: {
+      canonical: `https://activesports.live/match/${param}`,
+    },
   };
 }
 
@@ -142,23 +158,46 @@ export default async function MatchPage({ params, searchParams }: Props) {
     []
   );
 
-  let existingPrediction = null;
-  try {
-    const session = await auth();
-    if (session?.user?.id) {
-      existingPrediction = await prisma.prediction.findUnique({
-        where: { userId_fixtureId: { userId: session.user.id, fixtureId } }
-      });
-    }
-  } catch {}
-
   const [moreLive, moreToday] = await Promise.allSettled([
     getLiveFixtures(),
     getTodayFixtures(tz),
   ]);
 
+  const jsonLd = generateSportsEventLD({
+    name: `${fixture.teams.home.name} vs ${fixture.teams.away.name}`,
+    startDate: fixture.fixture.date,
+    location: fixture.fixture.venue.name,
+    homeTeam: { 
+      name: fixture.teams.home.name, 
+      logo: fixture.teams.home.logo,
+      url: `https://activesports.live/team/${toSlug(fixture.teams.home.name)}`
+    },
+    awayTeam: { 
+      name: fixture.teams.away.name, 
+      logo: fixture.teams.away.logo,
+      url: `https://activesports.live/team/${toSlug(fixture.teams.away.name)}`
+    },
+    url: `https://activesports.live/match/${param}`,
+    description: `Watch ${fixture.teams.home.name} vs ${fixture.teams.away.name} live score and stats.`,
+    eventStatus: fixture.fixture.status.short === 'FT' ? 'EventScheduled' : 'EventScheduled', // Simplified for now
+  });
+
+  const breadcrumbLd = generateBreadcrumbLD([
+    { name: 'Home', item: 'https://activesports.live' },
+    { name: 'Fixtures', item: 'https://activesports.live/fixtures' },
+    { name: `${fixture.teams.home.name} vs ${fixture.teams.away.name}`, item: `https://activesports.live/match/${param}` },
+  ]);
+
   return (
     <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <MatchContent
         fixtureId={fixtureId}
         fixture={fixture}
@@ -170,7 +209,6 @@ export default async function MatchPage({ params, searchParams }: Props) {
         oddsData={oddsData}
         liveOddsData={liveOddsData}
         isLive={isLive}
-        existingPrediction={existingPrediction}
         moreLive={moreLive.status === 'fulfilled' ? moreLive.value : []}
         moreToday={moreToday.status === 'fulfilled' ? moreToday.value : []}
         slug={param}

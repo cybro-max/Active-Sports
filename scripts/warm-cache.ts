@@ -15,7 +15,7 @@ const BASE_URL = process.env.BASE_URL || 'https://activesports.live';
 const CONCURRENCY = 10;
 
 const staticPaths = [
-  '/', '/leagues', '/world-cup', '/odds', '/predictions',
+  '/', '/leagues', '/world-cup', '/odds',
   '/leaderboard', '/search', '/favorites', '/world-cup/venues',
   '/teams', '/players',
 ];

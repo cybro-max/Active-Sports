@@ -185,7 +185,7 @@ export default async function FixturesPage({ searchParams }: Props) {
                   <div className="flex items-center gap-3">
                     {league.logo && (
                       <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 p-1.5 flex items-center justify-center">
-                        <img src={league.logo} alt="" className="w-full h-full object-contain" />
+                        <img src={league.logo} alt={`${league.name} logo`} className="w-full h-full object-contain" />
                       </div>
                     )}
                     <div className="flex flex-col">

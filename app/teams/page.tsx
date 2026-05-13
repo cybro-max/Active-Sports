@@ -1,24 +1,53 @@
-import { prisma } from '@/lib/prisma';
+import { getStandings, MAJOR_LEAGUES, CURRENT_SEASON } from '@/lib/apifootball';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Shield, Trophy, Zap, Globe } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { toSlug } from '@/lib/slug';
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: 'Global Football Teams Directory | ActiveSports',
+  title: 'Global Football Teams Directory',
   description: 'Browse every major football club worldwide. Stats, squads, fixtures, and tactical analysis for 130+ elite teams.',
 };
 
-export default async function TeamsPage() {
-  const teamModel = (prisma as any).team;
-  const teams = await teamModel.findMany({
-    orderBy: { name: 'asc' },
-    include: { league: true }
-  });
+async function getEliteTeams() {
+  const teams: any[] = [];
+  const teamIds = new Set<number>();
 
+  // Fetch standings for top 5 leagues to get elite teams
+  const top5 = [39, 140, 78, 135, 61]; // PL, La Liga, Bundesliga, Serie A, Ligue 1
+  
+  const results = await Promise.allSettled(
+    top5.map(id => getStandings(id, CURRENT_SEASON))
+  );
+
+  for (const r of results) {
+    if (r.status === 'fulfilled') {
+      for (const group of r.value) {
+        for (const standing of group.league.standings) {
+          for (const s of standing) {
+            if (!teamIds.has(s.team.id)) {
+              teamIds.add(s.team.id);
+              teams.push({
+                id: s.team.id,
+                name: s.team.name,
+                logo: s.team.logo,
+                country: group.league.country,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return teams.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export default async function TeamsPage() {
+  const teams = await getEliteTeams();
   const countriesCount = new Set(teams.map((t: any) => t.country)).size;
 
   return (

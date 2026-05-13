@@ -4,7 +4,7 @@ import WorldCupNav from '@/components/WorldCupNav';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'FIFA World Cup 2026 Stats — Top Scorers & Team Records | ActiveSports',
+  title: 'FIFA World Cup 2026 Stats — Top Scorers & Team Records',
   description: 'Comprehensive statistics for the 2026 FIFA World Cup. Top scorers, most assists, clean sheets, and team performance metrics in the 48-nation era.',
 };
 

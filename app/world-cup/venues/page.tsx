@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import { toSlug } from '@/lib/slug';
 
 export const metadata: Metadata = {
-  title: 'FIFA World Cup 2026 — Venues | ActiveSports',
+  title: 'FIFA World Cup 2026 — Venues',
   description:
     'All 16 official FIFA World Cup 2026 stadiums across the USA, Canada, and Mexico — capacity, city, surface, and match count.',
 };

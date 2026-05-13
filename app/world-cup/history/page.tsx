@@ -4,7 +4,7 @@ import WorldCupNav from '@/components/WorldCupNav';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'History of the FIFA World Cup — 1930 to 2026 | ActiveSports',
+  title: 'History of the FIFA World Cup — 1930 to 2026',
   description: 'Explore the complete history of the FIFA World Cup. From the inaugural 1930 tournament in Uruguay to the 2026 expansion. Iconic moments, legends, and records.',
 };
 

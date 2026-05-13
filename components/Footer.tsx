@@ -19,9 +19,8 @@ export default function Footer() {
       links: [
         { label: 'Live Scores', href: '/' },
         { label: 'Leagues', href: '/leagues' },
-        { label: 'Predictions', href: '/predictions' },
-        { label: 'Battle Mode', href: '/prediction-battle' },
         { label: 'Leaderboard', href: '/leaderboard' },
+        { label: 'Stats Leaders', href: '/stats/leaders' },
       ],
     },
     {
@@ -63,7 +62,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-3 group">
               <Image
                 src="/logo icon.png"
-                alt="ActiveSports"
+                alt="ActiveSports Logo — Global Football Intelligence Hub"
                 width={48}
                 height={48}
                 className="drop-shadow-[0_0_12px_rgba(33,150,243,0.5)] transition-transform group-hover:scale-110"

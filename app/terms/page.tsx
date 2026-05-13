@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | ActiveSports',
+  title: 'Terms of Service',
   description: 'Read the ActiveSports Terms of Service. By using our platform, you agree to these terms governing access, predictions, content, and community conduct.',
 };
 

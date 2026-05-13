@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | ActiveSports',
+  title: 'Privacy Policy',
   description: 'Read the ActiveSports Privacy Policy. Learn how we collect, use, and protect your personal information when you use our platform.',
 };
 

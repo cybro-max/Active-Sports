@@ -15,7 +15,7 @@ import TopStandings from '@/components/home/TopStandings';
 export const revalidate = 120;
 
 export const metadata: Metadata = {
-  title: 'Live Football Scores & Official Match Insights | ActiveSports',
+  title: 'Live Football Scores & Official Match Insights',
   description: 'Real-time football scores, official match insights, predictions, and advanced stats — all in one fast experience.',
   alternates: {
     canonical: '/',
@@ -117,14 +117,14 @@ export default async function HomePage({ searchParams }: HomeProps) {
                   {/* Subtle league logo watermark */}
                   {league.logo && (
                     <div className="absolute -top-4 -right-4 opacity-[0.04] group-hover:opacity-[0.08] transition-all duration-500">
-                      <img src={league.logo} alt="" width={100} height={100} />
+                      <img src={league.logo} alt={`${league.name} watermark`} width={100} height={100} />
                     </div>
                   )}
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-4">
                       {league.logo && <img src={league.logo} alt={league.name} width={22} height={22} className="shrink-0" />}
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-white truncate group-hover:text-[var(--brand)] transition-colors">{league.name}</h3>
+                        <h3 className="text-[10px] font-black uppercase tracking-widest text-white truncate group-hover:text-[var(--brand)] transition-colors">{league.name}</h3>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         {liveCount > 0 && (
@@ -148,7 +148,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
                               {isLive ? `${f.fixture.status.elapsed}'` : isFinished ? 'FT' : formatMatchTime(f.fixture.date, selectedTz)}
                             </span>
                             <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                              <img src={f.teams.home.logo} alt="" width={14} height={14} className="shrink-0" />
+                             <img src={f.teams.home.logo} alt={`${f.teams.home.name} icon`} width={14} height={14} className="shrink-0" />
                               <span className={`text-[11px] truncate ${isFinished && f.teams.home.winner === false ? 'text-[var(--text-muted)]' : 'text-[var(--text-body)]'}`}>{f.teams.home.name}</span>
                             </div>
                             <span className={`text-[11px] font-bold font-mono min-w-[28px] text-center ${
@@ -158,7 +158,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
                             </span>
                             <div className="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
                               <span className={`text-[11px] truncate ${isFinished && f.teams.away.winner === false ? 'text-[var(--text-muted)]' : 'text-[var(--text-body)]'}`}>{f.teams.away.name}</span>
-                              <img src={f.teams.away.logo} alt="" width={14} height={14} className="shrink-0" />
+                              <img src={f.teams.away.logo} alt={`${f.teams.away.name} icon`} width={14} height={14} className="shrink-0" />
                             </div>
                           </div>
                         );

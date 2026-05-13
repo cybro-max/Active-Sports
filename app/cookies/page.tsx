@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Cookie Policy | ActiveSports',
+  title: 'Cookie Policy',
   description: 'Learn about how ActiveSports uses cookies, what types of cookies we use, and how you can manage your cookie preferences.',
 };
 

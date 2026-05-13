@@ -3,7 +3,7 @@ import { Mail, Globe, MessageCircle, Zap, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | ActiveSports',
+  title: 'Contact Us',
   description: 'Get in touch with ActiveSports. We would love to hear your feedback, questions, and suggestions for improving the platform.',
 };
 

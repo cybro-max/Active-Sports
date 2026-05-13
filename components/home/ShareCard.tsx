@@ -105,7 +105,7 @@ export default function ShareCard({
           if (fixture) {
             router.push(`/match/${fixture.fixture.id}/story`);
           } else {
-            router.push(`/predictions`); // Fallback
+            router.push(`/`); // Fallback
           }
         })} 
         className="w-full py-4 bg-white/5 border-t border-white/10 text-[10px] font-black text-white uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2 relative z-10"

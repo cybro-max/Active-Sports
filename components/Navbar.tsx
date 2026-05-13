@@ -16,10 +16,11 @@ function setTzCookie(tz: string) {
 
 function getTzCookie() {
   if (typeof document === 'undefined') return null;
-  return document.cookie
+  const value = document.cookie
     .split('; ')
     .find(row => row.startsWith(`${TZ_COOKIE_NAME}=`))
     ?.split('=')[1];
+  return value ? decodeURIComponent(value) : null;
 }
 
 interface DropdownItem {
@@ -67,10 +68,8 @@ const dropdowns: (DropdownSection & { trigger: string })[] = [
     trigger: 'More',
     label: 'Features',
     items: [
-      { href: '/predictions', label: 'Predictions', icon: <BarChart3 className="w-4 h-4" />, description: 'AI-powered match predictions' },
+      { href: '/leaderboard', label: 'Leaderboard', icon: <Trophy className="w-4 h-4" />, description: 'Top scorers, standings & stats' },
       { href: '/odds', label: 'Odds', icon: <BarChart3 className="w-4 h-4" />, description: 'Compare bookmaker odds' },
-      { href: '/prediction-battle', label: 'Battle', icon: <Swords className="w-4 h-4" />, description: 'Compete with friends' },
-      { href: '/leaderboard', label: 'Ranking', icon: <BarChart3 className="w-4 h-4" />, description: 'Top predictors leaderboard' },
       { href: '/community', label: 'Community', icon: <Globe className="w-4 h-4" />, description: 'Join the conversation' },
     ],
   },
@@ -240,7 +239,8 @@ export default function Navbar() {
   ];
 
   function formatTz(tz: string) {
-    return tz.split('/').pop()?.replace(/_/g, ' ') || tz;
+    const decoded = decodeURIComponent(tz);
+    return decoded.split('/').pop()?.replace(/_/g, ' ') || decoded;
   }
 
   return (
@@ -252,13 +252,13 @@ export default function Navbar() {
             : 'bg-transparent border-b border-transparent py-5'
         }`}
       >
-        <nav className="max-w-screen-2xl mx-auto px-6 flex items-center justify-between" suppressHydrationWarning>
+        <nav className="max-w-screen-2xl mx-auto px-4 sm:px-6 flex items-center justify-between" suppressHydrationWarning>
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 group-hover:scale-105">
               <Image
                 src="/logo icon.png"
-                alt="ActiveSports"
+                alt="ActiveSports Logo — Next-Gen Football Intelligence"
                 width={40}
                 height={40}
                 className="drop-shadow-[0_0_8px_rgba(33,150,243,0.4)] transition-all duration-300"
@@ -347,7 +347,7 @@ export default function Navbar() {
                  <Link href="/profile" className="flex items-center gap-2 group">
                     <div className="w-9 h-9 rounded-full border border-white/10 overflow-hidden group-hover:border-[var(--brand)] transition-all">
                        {session.user?.image ? (
-                         <Image src={session.user.image} alt="User" width={36} height={36} />
+                         <Image src={session.user.image} alt={session.user.name || 'User Profile'} width={36} height={36} />
                        ) : (
                          <div className="w-full h-full bg-white/5 flex items-center justify-center">
                             <User className="w-4 h-4 text-white" />
@@ -359,18 +359,18 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => signIn()}
-                className="px-6 py-2.5 bg-white text-black text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[var(--brand)] hover:text-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-white text-black text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[var(--brand)] hover:text-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
               >
                 Sign In
               </button>
             )}
 
             <button
-              className="lg:hidden p-2.5 rounded-xl text-[var(--text-muted)] hover:text-white hover:bg-white/5"
+              className="lg:hidden p-2 rounded-xl text-[var(--text-muted)] hover:text-white hover:bg-white/5"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </nav>

@@ -18,8 +18,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   favorites     Favorite[]
-  predictions   Prediction[]
-  reactions     Reaction[]
 }
 
 model Account {
@@ -69,38 +67,6 @@ model Favorite {
   @@unique([userId, type, entityId])
 }
 
-model Prediction {
-  id        String   @id @default(cuid())
-  userId    String
-  fixtureId Int
-  homeGoals Int
-  awayGoals Int
-  points    Int      @default(0)
-  resolved  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, fixtureId]) // A user can only have one prediction per fixture
-  @@index([userId])
-  @@index([fixtureId])
-}
-
-model Reaction {
-  id        String   @id @default(cuid())
-  userId    String
-  fixtureId Int
-  emoji     String   // The emoji selected (e.g. '🔥', '😭')
-  message   String?  // Optional text comment
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([fixtureId])
-}
-
 model SyncStatus {
   id        String   @id @default(cuid())
   job       String   @unique
@@ -141,4 +107,40 @@ model ApiCache {
   updatedAt DateTime @updatedAt
 
   @@index([expiresAt])
+}
+
+model Team {
+  id          Int      @id
+  name        String
+  logo        String
+  country     String?
+  venueName   String?
+  venueId     Int?
+  leagueId    Int?
+  leagueName  String?
+  updatedAt   DateTime @updatedAt
+  players     Player[]
+
+  @@index([name])
+}
+
+model Player {
+  id          Int      @id
+  name        String
+  firstname   String?
+  lastname    String?
+  age         Int?
+  nationality String?
+  height      String?
+  weight      String?
+  photo       String?
+  team        Team?    @relation(fields: [teamId], references: [id])
+  teamId      Int?
+  position    String?
+  number      Int?
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
+  @@index([teamId])
+  @@index([position])
 }

@@ -4,7 +4,7 @@ import WorldCupNav from '@/components/WorldCupNav';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'FIFA World Cup 2026 Standings — Groups A to L | ActiveSports',
+  title: 'FIFA World Cup 2026 Standings — Groups A to L',
   description: 'Track the live standings for all 12 groups in the 2026 FIFA World Cup. Real-time updates on points, goal difference, and qualification status for the Round of 32.',
 };
 

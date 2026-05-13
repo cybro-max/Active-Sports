@@ -94,6 +94,8 @@ export function generatePersonLD(params: {
   birthDate?: string;
   jobTitle?: string;
   affiliation?: { name: string; url?: string };
+  height?: string;
+  weight?: string;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -111,6 +113,8 @@ export function generatePersonLD(params: {
         ...(params.affiliation.url && { url: params.affiliation.url }),
       },
     }),
+    ...(params.height && { height: params.height }),
+    ...(params.weight && { weight: params.weight }),
   };
 }
 
@@ -133,5 +137,18 @@ export function generateSportsOrgLD(params: {
       location: { '@type': 'Country', name: params.country },
     }),
     ...(params.description && { description: params.description }),
+  };
+}
+// ─── BreadcrumbList ──────────────────────────────────────────────────────────
+export function generateBreadcrumbLD(items: { name: string; item: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: it.name,
+      item: it.item,
+    })),
   };
 }

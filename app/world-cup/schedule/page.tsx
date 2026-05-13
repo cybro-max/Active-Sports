@@ -4,7 +4,7 @@ import WorldCupNav from '@/components/WorldCupNav';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'FIFA World Cup 2026 Schedule — Full Match Calendar | ActiveSports',
+  title: 'FIFA World Cup 2026 Schedule — Full Match Calendar',
   description: 'View the complete 104-match schedule for the 2026 FIFA World Cup. Filter by date, venue, city, and host nation. Stay updated with kick-off times and locations.',
 };
 

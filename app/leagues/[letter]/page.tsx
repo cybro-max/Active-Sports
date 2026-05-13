@@ -79,7 +79,7 @@ export default async function LeagueDirectoryPage({ params }: Props) {
               href={`/league/${toSlug(league.name)}`}
               className="card p-5 flex items-center justify-between group hover:border-[var(--brand)] transition-all"
             >
-              <span className="font-bold text-white group-hover:text-[var(--brand)] transition-colors truncate">
+              <span className="font-black text-[10px] text-white group-hover:text-[var(--brand)] transition-colors truncate uppercase tracking-wider">
                 {league.name}
               </span>
               <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--brand)] transition-all group-hover:translate-x-1" />

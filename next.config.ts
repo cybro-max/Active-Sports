@@ -50,5 +50,4 @@ export default withSentryConfig(nextConfig, {
   project: process.env.SENTRY_PROJECT || "activesports",
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  disableLogger: true,
 });

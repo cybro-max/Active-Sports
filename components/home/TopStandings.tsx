@@ -31,7 +31,7 @@ export default async function TopStandings() {
                 <Image src={league.logo} alt={league.name} width={20} height={20} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-xs font-black uppercase tracking-widest text-white truncate">{league.name}</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-white truncate group-hover:text-[var(--brand)] transition-colors">{league.name}</h3>
                 <span className="text-[10px] text-[var(--text-muted)] font-bold">{league.country}</span>
               </div>
               <ChevronRight className="w-4 h-4 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-all" />

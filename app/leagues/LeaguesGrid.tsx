@@ -128,9 +128,9 @@ export default function LeaguesGrid({ leagues }: { leagues: LeagueRow[] }) {
               />
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="font-bold text-xs text-white group-hover:text-[var(--brand)] transition-colors truncate">
+              <h3 className="font-black text-[10px] text-white group-hover:text-[var(--brand)] transition-colors truncate uppercase tracking-wider">
                 {league.name}
-              </h2>
+              </h3>
               <p className="text-[11px] font-medium text-[var(--text-muted)] flex items-center gap-1">
                 <MapPin className="w-2.5 h-2.5" /> {league.country}
               </p>
