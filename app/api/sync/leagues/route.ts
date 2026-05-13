@@ -9,7 +9,7 @@ export async function GET() {
     const leagues = await getLeagues({ current: true });
 
     const existing = await prisma.league.findMany({ select: { id: true, season: true } });
-    const existingMap = new Map(existing.map(l => [l.id, l.season]));
+    const existingMap = new Map(existing.map((l: { id: number; season: number }) => [l.id, l.season]));
 
     let created = 0;
     let updated = 0;
