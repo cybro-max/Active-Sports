@@ -1,0 +1,144 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String       @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  favorites     Favorite[]
+  predictions   Prediction[]
+  reactions     Reaction[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // 'league' | 'team' | 'player'
+  entityId  Int
+  name      String
+  logo      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, entityId])
+}
+
+model Prediction {
+  id        String   @id @default(cuid())
+  userId    String
+  fixtureId Int
+  homeGoals Int
+  awayGoals Int
+  points    Int      @default(0)
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fixtureId]) // A user can only have one prediction per fixture
+  @@index([userId])
+  @@index([fixtureId])
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  userId    String
+  fixtureId Int
+  emoji     String   // The emoji selected (e.g. '🔥', '😭')
+  message   String?  // Optional text comment
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([fixtureId])
+}
+
+model SyncStatus {
+  id        String   @id @default(cuid())
+  job       String   @unique
+  lastRun   DateTime
+  lastError String?
+  nextRun   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model League {
+  id        Int      @id
+  name      String
+  type      String
+  logo      String
+  country   String
+  flag      String?
+  code      String?
+  season    Int
+  updatedAt DateTime @updatedAt
+
+  @@index([country])
+  @@index([name])
+}
+
+model ContentCache {
+  key         String   @id
+  content     String
+  generatedAt DateTime @default(now())
+  model       String
+}
+
+model ApiCache {
+  key       String   @id
+  data      Json
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([expiresAt])
+}
