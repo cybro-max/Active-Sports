@@ -330,7 +330,7 @@ export default async function LeaguePage({ params, searchParams }: Props) {
       />
 
       {/* Cinematic Hero Section */}
-      <div className="relative overflow-hidden rounded-[32px] mb-10 card border-0 group fade-up">
+      <div className="relative overflow-hidden rounded-[24px] md:rounded-[32px] mb-6 sm:mb-10 card border-0 group fade-up">
         {/* Background Layer */}
         <div className="absolute inset-0 z-0">
           <Image 
@@ -343,12 +343,12 @@ export default async function LeaguePage({ params, searchParams }: Props) {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-base)]/50 to-[var(--bg-base)]" />
         </div>
 
-        <div className="relative z-10 p-6 sm:p-10 lg:p-12">
+        <div className="relative z-10 p-5 sm:p-10 lg:p-12">
           <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
             {/* Logo Wrapper */}
-            <div className="relative shrink-0">
+            <div className="relative shrink-0 mx-auto md:mx-0">
               <div className="absolute -inset-4 bg-[var(--brand)]/10 blur-2xl rounded-full opacity-50" />
-              <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-4 sm:p-6 shadow-2xl flex items-center justify-center">
+              <div className="relative w-20 h-20 sm:w-32 sm:h-32 rounded-2xl sm:rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-3 sm:p-6 shadow-2xl flex items-center justify-center">
                 <Image
                   src={leagueInfo.league.logo}
                   alt={leagueInfo.league.name}
@@ -360,8 +360,8 @@ export default async function LeaguePage({ params, searchParams }: Props) {
             </div>
 
             {/* Info Section */}
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-3 mb-3">
+            <div className="flex-1 min-w-0 text-center md:text-left">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 mb-3">
                 <span className="px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-[10px] font-black uppercase tracking-wider border border-[var(--brand)]/20 backdrop-blur-sm">
                   {leagueInfo.league.type}
                 </span>
@@ -383,12 +383,12 @@ export default async function LeaguePage({ params, searchParams }: Props) {
                 </div>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight mb-6 leading-[1.1]">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight mb-6 leading-tight sm:leading-[1.1]">
                 {leagueInfo.league.name}
               </h1>
 
               {/* Quick Stats Grid */}
-              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-4 sm:gap-8">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center md:justify-start gap-4 sm:gap-8">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
                     <Users className="w-5 h-5 text-[var(--brand)]" />

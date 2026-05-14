@@ -11,7 +11,7 @@ import { prisma } from '@/lib/prisma';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://activesports.live';
   const now = new Date();
-  const db = prisma as any;
+  const db = prisma;
 
   // 1. Static Core Pages
   const staticPages = [

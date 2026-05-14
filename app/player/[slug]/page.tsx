@@ -5,13 +5,12 @@ import { Suspense } from 'react';
 import { getPlayer, getTrophies, getTransfers, getInjuries, getSidelined, getPlayersSearch, getCoach, CURRENT_SEASON, getTopScorers } from '@/lib/apifootball';
 import AsyncSection from '@/components/AsyncSection';
 import { generatePersonLD, generateBreadcrumbLD } from '@/lib/json-ld';
-import { SkeletonGrid } from '@/components/Skeleton';
 import { captureCatch } from '@/lib/utils';
-import { getPlayerIdsLite, isFullBuild } from '@/lib/build-params';
-import { generatePlayerBio, generatePlayerAbout } from '@/lib/content-generator';
+import { isFullBuild } from '@/lib/build-params';
+import { generatePlayerAbout } from '@/lib/content-generator';
 import { toSlug } from '@/lib/slug';
 import { getPlayerSlugMap, getPlayerIdToSlug } from '@/lib/slug-maps';
-import { User, Globe, Ruler, Weight, Trophy, RefreshCcw, Activity, ArrowRight, BookOpen, Briefcase, Star, TrendingUp, Zap, Shield, Target } from 'lucide-react';
+import { User, Globe, Ruler, Weight, Trophy, RefreshCcw, Activity, ArrowRight, BookOpen, Briefcase, TrendingUp, Zap, Shield, Target } from 'lucide-react';
 import PlayerRadarChart from '@/components/PlayerRadarChart';
 import JsonLd from '@/components/JsonLd';
 import type { Metadata } from 'next';
@@ -34,7 +33,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const param = (await params).slug;
   let playerId: number | undefined;
   if (/^\d+$/.test(param)) {
-    const idToSlug = await getPlayerIdToSlug();
     playerId = Number(param);
   } else {
     const slugMap = await getPlayerSlugMap();
@@ -46,11 +44,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!player) return { title: 'Athlete Profile' };
   
   const teamName = players[0]?.statistics[0]?.team?.name ?? 'Independent';
-  const bio = await generatePlayerBio(player.name, player.nationality, teamName);
   
   return {
     title: `${player.name} — ${teamName} Stats, Bio & Transfers`,
-    description: bio || `Explore the complete tactical profile of ${player.name} at ${teamName}. Real-time 2024/25 stats, career history, and market value analysis.`,
+    description: `Explore the complete tactical profile of ${player.name} at ${teamName}. Real-time 2024/25 stats, career history, and market value analysis.`,
     alternates: { canonical: `https://activesports.live/player/${param}` },
     openGraph: {
       title: `${player.name} Profile | ActiveSports`,
@@ -60,8 +57,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// ─── Streaming sections ───────────────────────────────────────────
-
 async function StatsSection({ playerId, forceRefresh }: { playerId: number, forceRefresh?: boolean }) {
   const players = await captureCatch(getPlayer(playerId, CURRENT_SEASON, forceRefresh), []);
   const statistics = players[0]?.statistics ?? [];
@@ -70,39 +65,65 @@ async function StatsSection({ playerId, forceRefresh }: { playerId: number, forc
   if (!mainStats) return null;
 
   return (
-    <section className="card mb-6 fade-up">
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="section-title mb-0">Performance Radar</h2>
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-1 rounded bg-[var(--brand)]/10 text-[10px] font-black text-[var(--brand)] uppercase tracking-wider">
-                {mainStats.games.position}
-              </span>
-              <span className="px-2 py-1 rounded bg-white/5 text-[10px] font-black text-[var(--text-muted)] uppercase tracking-wider">
-                Rating: {mainStats.games.rating ? Number(mainStats.games.rating).toFixed(1) : 'N/A'}
-              </span>
+    <section className="card p-6 sm:p-8 relative overflow-hidden group fade-up">
+      <div className="absolute top-0 right-0 p-8 opacity-[0.02] pointer-events-none group-hover:scale-110 transition-transform duration-700">
+        <Activity size={160} />
+      </div>
+      
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center border border-[var(--brand)]/20 shadow-inner">
+            <Activity className="w-6 h-6 text-[var(--brand)]" />
+          </div>
+          <div>
+            <h2 className="text-xl font-display font-black text-white">Season Performance</h2>
+            <p className="text-xs text-[var(--text-muted)] font-bold uppercase tracking-wider">Tactical metrics for {CURRENT_SEASON}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+          <div className="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse" />
+          <span className="text-[10px] font-black text-white uppercase tracking-widest">Live Profile</span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: 'Rating', val: mainStats.games.rating || '—', color: 'var(--brand)' },
+          { label: 'Goals', val: mainStats.goals.total || 0, color: '#10b981' },
+          { label: 'Assists', val: mainStats.goals.assists || 0, color: '#3b82f6' },
+          { label: 'Appearances', val: mainStats.games.appearances || 0, color: '#f59e0b' }
+        ].map((stat, i) => (
+          <div key={i} className="relative p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all">
+            <div className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">{stat.label}</div>
+            <div className="text-3xl font-display font-black text-white" style={{ color: stat.val !== '—' ? stat.color : undefined }}>
+              {stat.val}
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        ))}
+      </div>
+
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-white/5 pt-8">
+        <div className="space-y-6">
+          <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-[var(--brand)]" /> Performance breakdown
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
             {[
-              { label: 'Goals', value: mainStats.goals.total ?? 0, icon: <Target className="w-3.5 h-3.5" />, color: 'var(--success)' },
-              { label: 'Assists', value: mainStats.goals.assists ?? 0, icon: <Zap className="w-3.5 h-3.5" />, color: 'var(--accent)' },
-              { label: 'Appearances', value: mainStats.games.appearances ?? 0, icon: <Activity className="w-3.5 h-3.5" />, color: 'var(--text-body)' },
-              { label: 'Minutes', value: mainStats.games.minutes ?? 0, icon: <TrendingUp className="w-3.5 h-3.5" />, color: 'var(--text-body)' },
-            ].map(s => (
-              <div key={s.label} className="rounded-xl p-4 bg-[var(--bg-subtle)] border border-white/5 hover:border-white/10 transition-all">
-                <div className="flex items-center gap-2 text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1">
-                  {s.icon} {s.label}
-                </div>
-                <div className="text-2xl font-display font-black" style={{ color: s.color }}>{s.value}</div>
+              { label: 'Dribbles', val: `${mainStats.dribbles.success || 0}` },
+              { label: 'Duels Won', val: `${mainStats.duels.won || 0}` },
+              { label: 'Pass Acc.', val: `${mainStats.passes.accuracy || 0}%` },
+              { label: 'Tackles', val: `${mainStats.tackles.total || 0}` }
+            ].map((s, i) => (
+              <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-white/5">
+                <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase">{s.label}</span>
+                <span className="text-xs font-black text-white">{s.val}</span>
               </div>
             ))}
           </div>
         </div>
-        
-        <div className="lg:w-1/3 flex flex-col items-center justify-center border-l border-white/5 pl-0 lg:pl-8">
-           <PlayerRadarChart stats={mainStats} />
+        <div className="h-48 flex items-center justify-center">
+          <PlayerRadarChart stats={mainStats} />
         </div>
       </div>
     </section>
@@ -180,43 +201,6 @@ async function DetailedStatsSection({ playerId }: { playerId: number }) {
               ))}
             </div>
           </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-async function PopularPlayersSection() {
-  const topPlayers = await captureCatch(getTopScorers(39, CURRENT_SEASON), []);
-  
-  return (
-    <section className="mt-12 fade-up">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-display font-black text-white">Popular Players</h2>
-          <p className="text-sm text-[var(--text-muted)]">Trending stars across European leagues</p>
-        </div>
-        <Link href="/stats/leaders" className="text-xs font-black text-[var(--brand)] uppercase tracking-widest hover:underline">
-          View All Leaders
-        </Link>
-      </div>
-      
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {topPlayers.slice(0, 6).map(p => (
-          <Link 
-            key={p.player.id} 
-            href={`/player/${toSlug(p.player.name)}`}
-            className="card group hover:border-[var(--brand)]/30 transition-all p-3"
-          >
-            <div className="relative aspect-square rounded-xl overflow-hidden mb-3 bg-[var(--bg-subtle)] ring-1 ring-white/5">
-              <Image src={p.player.photo} alt={p.player.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
-            </div>
-            <div className="text-sm font-bold text-white truncate">{p.player.name}</div>
-            <div className="flex items-center justify-between mt-1">
-              <span className="text-[10px] text-[var(--text-muted)] truncate flex-1">{p.statistics[0].team.name}</span>
-              <span className="text-[10px] font-black text-[var(--brand)]">{p.statistics[0].games.rating || '—'}</span>
-            </div>
-          </Link>
         ))}
       </div>
     </section>
@@ -337,7 +321,7 @@ async function PlayerAboutSection({ player, teamName }: { player: any, teamName:
         About {player.name}
       </h2>
       <p className="text-sm leading-relaxed text-[var(--text-body)] italic opacity-80">
-        "{about}"
+        &quot;{about}&quot;
       </p>
     </section>
   );
@@ -454,7 +438,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
 
   if (!playerId) notFound();
 
-  let players: any[] = [];
+  let players: { player: any; statistics: any[] }[] = [];
   const seasonsToTry = [CURRENT_SEASON, CURRENT_SEASON - 1, 2022, 2021, 2020];
   if (!isCoachFallback) {
     for (const s of seasonsToTry) {
@@ -463,7 +447,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
     }
   }
 
-  let player: any;
+  let player: any = null;
   let statistics: any[] = [];
   if (players.length) {
     player = players[0].player;
@@ -507,8 +491,8 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       <JsonLd data={playerLD} />
       <JsonLd data={breadcrumbLd} />
 
-      <div className="card mb-8 fade-up border-b-2 border-b-[var(--brand)]/20">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+      <div className="card mb-8 fade-up border-b-2 border-b-[var(--brand)]/20 p-6 sm:p-10">
+        <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="relative">
             <div className="w-32 h-32 rounded-3xl bg-[var(--bg-subtle)] ring-4 ring-white/5 overflow-hidden shadow-2xl">
               <Image src={player.photo} alt={player.name} width={128} height={128} className="object-cover" />
@@ -518,29 +502,29 @@ export default async function PlayerPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          <div className="flex-1 text-center md:text-left">
-            <div className="flex flex-col md:flex-row md:items-end gap-3 mb-4">
-              <h1 className="text-4xl font-display font-black text-white tracking-tight">
+          <div className="flex-1 text-center md:text-left w-full">
+            <div className="flex flex-col md:flex-row md:items-end justify-center md:justify-start gap-3 mb-6">
+              <h1 className="text-3xl sm:text-4xl font-display font-black text-white tracking-tight leading-tight">
                 {player.firstname} <span className="text-[var(--brand)]">{player.lastname}</span>
               </h1>
-              <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+              <div className="flex items-center justify-center md:justify-start gap-2 mb-1 opacity-80">
                 {mainStats?.team?.logo && <Image src={mainStats.team.logo} alt="" width={24} height={24} />}
                 <span className="text-sm font-black uppercase tracking-[0.2em] text-[var(--text-muted)]">{mainStats?.team?.name}</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl">
-              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                <User className="w-3.5 h-3.5" /> <span className="font-bold text-white">Age {player.age}</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto md:mx-0">
+              <div className="flex items-center justify-center md:justify-start gap-2 text-xs text-[var(--text-muted)] bg-white/5 md:bg-transparent p-2 md:p-0 rounded-lg">
+                <User className="w-3.5 h-3.5 text-[var(--brand)]" /> <span className="font-bold text-white">Age {player.age}</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                <Globe className="w-3.5 h-3.5" /> <span className="font-bold text-white">{player.nationality}</span>
+              <div className="flex items-center justify-center md:justify-start gap-2 text-xs text-[var(--text-muted)] bg-white/5 md:bg-transparent p-2 md:p-0 rounded-lg">
+                <Globe className="w-3.5 h-3.5 text-[var(--brand)]" /> <span className="font-bold text-white">{player.nationality}</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                <Ruler className="w-3.5 h-3.5" /> <span className="font-bold text-white">{player.height || 'N/A'}</span>
+              <div className="flex items-center justify-center md:justify-start gap-2 text-xs text-[var(--text-muted)] bg-white/5 md:bg-transparent p-2 md:p-0 rounded-lg">
+                <Ruler className="w-3.5 h-3.5 text-[var(--brand)]" /> <span className="font-bold text-white">{player.height || '—'}</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                <Weight className="w-3.5 h-3.5" /> <span className="font-bold text-white">{player.weight || 'N/A'}</span>
+              <div className="flex items-center justify-center md:justify-start gap-2 text-xs text-[var(--text-muted)] bg-white/5 md:bg-transparent p-2 md:p-0 rounded-lg">
+                <Weight className="w-3.5 h-3.5 text-[var(--brand)]" /> <span className="font-bold text-white">{player.weight || '—'}</span>
               </div>
             </div>
           </div>
@@ -601,5 +585,41 @@ export default async function PlayerPage({ params, searchParams }: Props) {
         <PopularPlayersSection />
       </Suspense>
     </div>
+  );
+}
+async function PopularPlayersSection() {
+  const topPlayers = await captureCatch(getTopScorers(39, CURRENT_SEASON), []);
+  
+  return (
+    <section className="mt-12 fade-up">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-display font-black text-white">Popular Players</h2>
+          <p className="text-sm text-[var(--text-muted)]">Trending stars across European leagues</p>
+        </div>
+        <Link href="/stats/leaders" className="text-xs font-black text-[var(--brand)] uppercase tracking-widest hover:underline">
+          View All Leaders
+        </Link>
+      </div>
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {topPlayers.slice(0, 6).map(p => (
+          <Link 
+            key={p.player.id} 
+            href={`/player/${toSlug(p.player.name)}`}
+            className="card group hover:border-[var(--brand)]/30 transition-all p-3"
+          >
+            <div className="relative aspect-square rounded-xl overflow-hidden mb-3 bg-[var(--bg-subtle)] ring-1 ring-white/5">
+              <Image src={p.player.photo} alt={p.player.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+            </div>
+            <div className="text-sm font-bold text-white truncate">{p.player.name}</div>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-[10px] text-[var(--text-muted)] truncate flex-1">{p.statistics[0].team.name}</span>
+              <span className="text-[10px] font-black text-[var(--brand)]">{p.statistics[0].games.rating || '—'}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
