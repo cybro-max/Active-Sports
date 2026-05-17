@@ -1,14 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
+
+// Mock axios with a factory so it's initialized before apifootball is imported
+vi.mock('axios', () => {
+  const mockGet = vi.fn();
+  const mockInstance = {
+    get: mockGet,
+  };
+  return {
+    default: {
+      create: vi.fn(() => mockInstance),
+      isAxiosError: vi.fn(),
+    },
+  };
+});
+
+// Import after defining mock
 import { getApiStatus } from '@/lib/apifootball';
 
-// Mock axios
-vi.mock('axios');
-const mockedAxios = vi.mocked(axios);
-
 describe('API Football Client', () => {
+  // Retrieve the mocked get function from the created axios instance
+  const mockGet = vi.mocked(axios.create()).get;
+
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.mocked(mockGet).mockReset();
   });
 
   describe('getApiStatus', () => {
@@ -23,20 +38,15 @@ describe('API Football Client', () => {
         },
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (mockedAxios.create as any).mockReturnValue({
-        get: vi.fn().mockResolvedValue(mockResponse),
-      } as unknown as typeof axios);
+      vi.mocked(mockGet).mockResolvedValue(mockResponse);
 
       const result = await getApiStatus();
       expect(result).toEqual(mockResponse.data.response);
+      expect(mockGet).toHaveBeenCalledWith('/status');
     });
 
     it('should handle API errors', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (mockedAxios.create as any).mockReturnValue({
-        get: vi.fn().mockRejectedValue(new Error('API Error')),
-      } as unknown as typeof axios);
+      vi.mocked(mockGet).mockRejectedValue(new Error('API Error'));
 
       await expect(getApiStatus()).rejects.toThrow('API Error');
     });

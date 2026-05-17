@@ -42,24 +42,24 @@ async function getCache<T>(key: string): Promise<T | null> {
   // 3. Try Prisma (Persistent Fallback)
   try {
     const { prisma: p } = await import('./prisma');
-    const prisma = p as any; // Cast to any for the model access to resolve IDE drift
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const prisma = p as any;
     
     if (!prisma?.apiCache) {
       return null;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const dbEntry = await prisma.apiCache.findUnique({
       where: { key },
     });
     
     if (dbEntry && dbEntry.expiresAt > new Date()) {
       const data = dbEntry.data as T;
-      // Backfill memory cache
       memCache.set(key, { data, expires: dbEntry.expiresAt.getTime() });
       return data;
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(`[AFS Cache] Prisma get error for ${key}:`, err);
   }
   
@@ -81,19 +81,21 @@ async function setCache(key: string, data: unknown, ttlSeconds: number) {
   if (ttlSeconds >= 3600) {
     try {
       const { prisma: p } = await import('./prisma');
-      const prisma = p as any; // Cast to any for the model access to resolve IDE drift
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const prisma = p as any;
       
       if (!prisma?.apiCache) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       await prisma.apiCache.upsert({
         where: { key },
         update: {
-          data: data as any,
+          data,
           expiresAt: new Date(expiresAt),
         },
         create: {
           key,
-          data: data as any,
+          data,
           expiresAt: new Date(expiresAt),
         },
       });
@@ -236,29 +238,35 @@ async function apiFetch<T>(
  * Intelligent background sync to structured DB models.
  * Operates non-blockingly to ensure fast API responses.
  */
-async function handleAutoSync(endpoint: string, params: any, result: any) {
+async function handleAutoSync(endpoint: string, params: Record<string, unknown>, result: unknown) {
   try {
     if (!result || (Array.isArray(result) && result.length === 0)) return;
 
     if (endpoint === '/players' && params.team && (params.season || params.squad)) {
-      // Squad/Team players sync
-      await syncSquad(Number(params.team), { team: result[0]?.statistics?.[0]?.team, players: result.map((r: any) => ({
-        id: r.player.id,
-        name: r.player.name,
-        age: r.player.age,
-        number: r.statistics?.[0]?.games?.number,
-        position: r.statistics?.[0]?.games?.position,
-        photo: r.player.photo
-      }))});
+      const playersRes = result as Array<Record<string, unknown>>;
+      const firstPlayer = playersRes[0] as Record<string, unknown> | undefined;
+      const firstStats = (firstPlayer?.statistics as Array<Record<string, unknown>> | undefined)?.[0] as Record<string, unknown> | undefined;
+      await syncSquad(Number(params.team), {
+        team: firstStats?.team,
+        players: playersRes.map((r) => {
+          const player = (r as Record<string, unknown>).player as Record<string, unknown>;
+          const stats = ((r as Record<string, unknown>).statistics as Array<Record<string, unknown>> | undefined)?.[0]?.games as Record<string, unknown> | undefined;
+          return {
+            id: player.id as number,
+            name: player.name as string,
+            age: player.age as number,
+            number: stats?.number as number | undefined,
+            position: stats?.position as string | undefined,
+            photo: player.photo as string,
+          };
+        })
+      });
     } else if (endpoint === '/players' && params.id) {
-      // Single player detail sync
-      await syncPlayer(result[0]);
+      await syncPlayer((result as Array<Record<string, unknown>>)[0]);
     } else if (endpoint === '/teams' && params.id) {
-      // Single team detail sync
-      await syncTeam(result[0]);
+      await syncTeam((result as Array<Record<string, unknown>>)[0]);
     } else if ((endpoint === '/players' || endpoint === '/teams') && params.search) {
-      // Search results sync
-      await syncSearchResults(result);
+      await syncSearchResults(result as Array<Record<string, unknown>>);
     }
   } catch (err) {
     console.error(`[AFS AutoSync] Failed for ${endpoint}:`, err);
@@ -300,8 +308,9 @@ export async function getLeagues(params: {
 export async function getLeagueById(id: number) {
   try {
     return await apiFetch<LeagueResponse[]>('/leagues', { id }, TTL.STATIC);
-  } catch (err: any) {
-    if (err.message?.includes('limit')) {
+  } catch (err) {
+    const apiErr = err as { message?: string };
+    if (apiErr.message?.includes('limit')) {
       const major = MAJOR_LEAGUES.find(l => l.id === id);
       if (major) {
         return [{
@@ -473,7 +482,7 @@ export async function getPlayersSearch(search: string) {
     return results.flat().filter((p, i, self) => 
       self.findIndex(t => t.player.id === p.player.id) === i
     );
-  } catch (err) {
+  } catch {
     return [];
   }
 }

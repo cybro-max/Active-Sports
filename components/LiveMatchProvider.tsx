@@ -50,6 +50,7 @@ export function LiveMatchProvider({
   const [connected, setConnected] = useState(false);
   const esRef = useRef<EventSource | null>(null);
   const reconnectRef = useRef<number>(0);
+  const connectRef = useRef<() => void>(undefined);
 
   const connect = useCallback(() => {
     if (esRef.current) esRef.current.close();
@@ -77,10 +78,13 @@ export function LiveMatchProvider({
     es.onerror = () => {
       setConnected(false);
       es.close();
-      // Reconnect after 5s
-      reconnectRef.current = window.setTimeout(() => connect(), 5000);
+      reconnectRef.current = window.setTimeout(() => connectRef.current?.(), 5000);
     };
   }, [fixtureId]);
+
+  useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
 
   useEffect(() => {
     if (!initiallyLive) return;

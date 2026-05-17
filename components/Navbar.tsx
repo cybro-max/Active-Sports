@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { Search, Heart, Menu, X, User, ChevronDown, Globe, Trophy, Swords, BarChart3, Radio, Calendar, Clock, RefreshCcw, Activity } from 'lucide-react';
+import { Search, Heart, Menu, X, User, ChevronDown, Globe, Trophy, BarChart3, Radio, Calendar, Clock, RefreshCcw, Activity } from 'lucide-react';
 import { useSearchOverlay } from '@/components/SearchOverlay';
 import { DEFAULT_TIMEZONE, TZ_COOKIE_NAME } from '@/lib/utils';
 
@@ -166,40 +166,35 @@ function NavDropdown({ section, pathname }: { section: DropdownSection & { trigg
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const { data: session } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [tzOpen, setTzOpen] = useState(false);
   const tzRef = useRef<HTMLDivElement>(null);
-  const { open: searchOpen, setOpen: setSearchOpen } = useSearchOverlay();
+  const { setOpen: setSearchOpen } = useSearchOverlay();
 
   const [currentTz, setCurrentTz] = useState(DEFAULT_TIMEZONE);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const params = new URLSearchParams(window.location.search);
     const tzParam = params.get('tz');
     const tzCookie = getTzCookie();
     
-    // 1. Priority: URL Param -> Cookie -> Auto-detect -> Default
     let detectedTz = tzParam || tzCookie;
     
     if (!detectedTz) {
       try {
         detectedTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         if (detectedTz) setTzCookie(detectedTz);
-      } catch (e) {
+      } catch {
         detectedTz = DEFAULT_TIMEZONE;
       }
     } else if (tzParam) {
-      // Sync param to cookie
       setTzCookie(tzParam);
     }
     
-    if (detectedTz && detectedTz !== currentTz) {
-      setCurrentTz(detectedTz);
+    if (detectedTz) {
+      setTimeout(() => setCurrentTz(detectedTz), 0);
     }
   }, []);
 

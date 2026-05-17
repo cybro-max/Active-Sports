@@ -66,9 +66,6 @@ export default function LeaguesGrid({ leagues }: { leagues: LeagueRow[] }) {
     setPage(Math.max(1, Math.min(p, totalPages)));
   }
 
-  // Reset page when search/filter changes
-  useEffect(() => { setPage(1); }, [search, countryFilter]);
-
   return (
     <div suppressHydrationWarning>
       {/* ── FILTERS ───────────────────────────────────────────── */}
@@ -79,13 +76,19 @@ export default function LeaguesGrid({ leagues }: { leagues: LeagueRow[] }) {
             type="text"
             placeholder={`Search ${leagues.length} leagues...`}
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-sm text-white placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand)]/50 transition-colors"
           />
         </div>
         <div className="flex gap-1.5 overflow-x-auto pb-1 w-full sm:w-auto">
           <button
-            onClick={() => setCountryFilter('all')}
+            onClick={() => {
+              setCountryFilter('all');
+              setPage(1);
+            }}
             className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
               countryFilter === 'all'
                 ? 'bg-[var(--brand)] text-black'
@@ -97,7 +100,10 @@ export default function LeaguesGrid({ leagues }: { leagues: LeagueRow[] }) {
           {countries.slice(0, 20).map(c => (
             <button
               key={c}
-              onClick={() => setCountryFilter(c)}
+              onClick={() => {
+                setCountryFilter(c);
+                setPage(1);
+              }}
               className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
                 countryFilter === c
                   ? 'bg-[var(--brand)] text-black'

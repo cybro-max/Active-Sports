@@ -342,81 +342,81 @@ export default async function TeamPage({ params, searchParams }: Props) {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-base)]/50 to-[var(--bg-base)]" />
         </div>
 
-        <div className="relative z-10 p-5 sm:p-10 lg:p-12">
-          <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+        <div className="relative z-10 p-4 sm:p-10 lg:p-12">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center">
             {/* Logo Wrapper */}
             <div className="relative shrink-0 mx-auto md:mx-0">
               <div className="absolute -inset-4 bg-[var(--brand)]/10 blur-2xl rounded-full opacity-50" />
-              <div className="relative w-20 h-20 sm:w-32 sm:h-32 rounded-2xl sm:rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-3 sm:p-6 shadow-2xl flex items-center justify-center">
+              <div className="relative w-16 h-16 sm:w-32 sm:h-32 rounded-2xl sm:rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-3 sm:p-6 shadow-2xl flex items-center justify-center">
                 <Image
                   src={team.logo}
                   alt={team.name}
                   width={80}
                   height={80}
-                  className="object-contain"
+                  className="object-contain w-10 h-10 sm:w-20 sm:h-20"
                 />
               </div>
             </div>
 
             {/* Info Section */}
             <div className="flex-1 min-w-0 text-center md:text-left">
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 mb-3">
-                <span className="px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-[10px] font-black uppercase tracking-wider border border-[var(--brand)]/20 backdrop-blur-sm">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 mb-6">
+                <span className="px-3 py-1.5 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-[8px] sm:text-[10px] font-black uppercase tracking-wider border border-[var(--brand)]/20 backdrop-blur-sm">
                   Professional Club
                 </span>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-                  <span className="text-xs font-bold text-[var(--text-muted)]">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                  <span className="text-[10px] sm:text-xs font-bold text-white/60">
                     {team.country}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-                  <Calendar className="w-3 h-3 text-[var(--text-muted)]" />
-                  <span className="text-xs font-bold text-[var(--text-muted)]">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                  <Calendar className="w-3 h-3 text-white/40" />
+                  <span className="text-[10px] sm:text-xs font-bold text-white/60">
                     Est. {team.founded}
                   </span>
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight sm:leading-[1.1]">
+              <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6 mb-8">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
                   {team.name}
                 </h1>
                 <FavoriteButton type="team" entityId={team.id} name={team.name} logo={team.logo} />
               </div>
 
               {/* Quick Stats Grid */}
-              <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center md:justify-start gap-4 sm:gap-8">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center md:justify-start gap-3 sm:gap-8">
                 {teamStanding && (
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
-                      <span className="text-xl font-black text-[var(--brand)]">#{teamStanding.rank}</span>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                      <span className="text-base sm:text-xl font-black text-[var(--brand)]">#{teamStanding.rank}</span>
                     </div>
                     <div>
-                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Rank</p>
-                      <p className="text-lg font-bold text-white leading-none">{teamStanding.points} pts</p>
+                      <p className="text-[8px] sm:text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Rank</p>
+                      <p className="text-sm sm:text-lg font-bold text-white leading-none">{teamStanding.points} pts</p>
                     </div>
                   </div>
                 )}
 
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
-                    <Users className="w-5 h-5 text-[var(--accent)]" />
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                    <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent)]" />
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Stadium</p>
-                    <p className="text-lg font-bold text-white leading-none truncate max-w-[150px] sm:max-w-none">
+                  <div className="text-left">
+                    <p className="text-[8px] sm:text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Stadium</p>
+                    <p className="text-sm sm:text-lg font-bold text-white leading-none truncate max-w-[100px] sm:max-w-none">
                       {venue.name}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
-                    <RefreshCcw className="w-5 h-5 text-[var(--success)]" />
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                    <RefreshCcw className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--success)]" />
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Capacity</p>
-                    <p className="text-lg font-bold text-white leading-none">{venue.capacity?.toLocaleString() || '--'}</p>
+                  <div className="text-left">
+                    <p className="text-[8px] sm:text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Capacity</p>
+                    <p className="text-sm sm:text-lg font-bold text-white leading-none">{venue.capacity?.toLocaleString() || '--'}</p>
                   </div>
                 </div>
               </div>

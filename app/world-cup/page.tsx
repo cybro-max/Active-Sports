@@ -122,7 +122,7 @@ export default async function WorldCupPage() {
 
       {/* Hero section */}
       <div
-        className="card p-8 sm:p-16 mb-10 text-center relative overflow-hidden fade-up border border-[var(--border)] shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+        className="card p-6 sm:p-16 mb-12 text-center relative overflow-hidden fade-up border border-[var(--border)] shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
       >
         <video 
           src="/media/FIFA-promo_video.mp4" 
@@ -132,48 +132,63 @@ export default async function WorldCupPage() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 mix-blend-screen"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-[var(--bg-base)] z-0" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[var(--bg-base)] z-0" />
         
-        <div className="relative z-10">
-          <Image src="/media/fifalogo.png" alt="FIFA World Cup 2026 Logo" width={160} height={160} className="mb-6 mx-auto drop-shadow-[0_0_20px_rgba(0,230,118,0.4)]" />
+        <div className="relative z-10 flex flex-col items-center">
+          <Image 
+            src="/media/fifalogo.png" 
+            alt="FIFA World Cup 2026 Logo" 
+            width={90} 
+            height={90} 
+            className="mb-6 mx-auto drop-shadow-[0_0_30px_rgba(0,230,118,0.3)] sm:w-[160px] sm:h-[160px]" 
+          />
           <h1
-            className="text-5xl sm:text-7xl font-display font-black mb-2 text-white tracking-tight drop-shadow-lg"
+            className="text-3xl sm:text-7xl font-display font-black mb-3 text-white tracking-tight leading-none drop-shadow-2xl"
           >
             FIFA World Cup
           </h1>
-          <p className="text-3xl sm:text-4xl font-display font-bold text-[var(--brand)] mb-5 drop-shadow-[0_0_12px_rgba(0,230,118,0.3)]">2026</p>
-          <p className="text-lg font-medium mb-4 text-white drop-shadow-md">
+          <p className="text-2xl sm:text-4xl font-display font-bold text-[var(--brand)] mb-4 drop-shadow-[0_0_12px_rgba(0,230,118,0.3)]">2026</p>
+          <p className="text-sm sm:text-lg font-bold mb-6 text-white/80 tracking-widest uppercase">
             June 11 – July 19, 2026
           </p>
-          <div className="flex justify-center gap-6 mb-6">
+          
+          <div className="flex justify-center gap-5 sm:gap-10 mb-10">
             {WC_HOSTS.map((h) => (
-              <div key={h.country} className="text-center">
-                <div className="text-2xl drop-shadow-md">{h.flag}</div>
-                <div className="text-xs mt-1 text-white/90 drop-shadow-md">
+              <div key={h.country} className="flex flex-col items-center gap-1.5">
+                <span className="text-2xl sm:text-4xl drop-shadow-xl">{h.flag}</span>
+                <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-white/60">
                   {h.country}
-                </div>
+                </span>
               </div>
             ))}
           </div>
 
-          {/* Countdown */}
-          <div className="flex flex-col items-center justify-center mt-6">
-            <Image src="/media/fifatrophy.png" alt="FIFA World Cup Trophy" width={80} height={180} className="mb-6 drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]" />
-            <WorldCupCountdown />
+          {/* Countdown Section with improved spacing */}
+          <div className="flex flex-col items-center gap-6 mt-4">
+            <Image 
+              src="/media/fifatrophy.png" 
+              alt="FIFA World Cup Trophy" 
+              width={50} 
+              height={120} 
+              className="drop-shadow-[0_0_30px_rgba(255,215,0,0.4)] sm:w-[80px] sm:h-[180px]" 
+            />
+            <div className="scale-90 sm:scale-100">
+              <WorldCupCountdown />
+            </div>
           </div>
 
           <div
-            className="mt-8 flex flex-wrap justify-center gap-6 text-sm font-medium text-white/90 drop-shadow-md"
+            className="mt-8 flex flex-wrap justify-center gap-3 sm:gap-6 text-[11px] sm:text-sm font-medium text-white/90 drop-shadow-md"
           >
-            <span className="flex items-center gap-2"><Trophy className="w-5 h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 48 Teams</span>
-            <span className="flex items-center gap-2"><MapPin className="w-5 h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 16 Stadiums</span>
-            <span className="flex items-center gap-2"><Activity className="w-5 h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 104 Matches</span>
-            <span className="flex items-center gap-2"><Globe className="w-5 h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 3 Host Countries</span>
+            <span className="flex items-center gap-1 sm:gap-2"><Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 48 Teams</span>
+            <span className="flex items-center gap-1 sm:gap-2"><MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 16 Stadiums</span>
+            <span className="flex items-center gap-1 sm:gap-2"><Activity className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 104 Matches</span>
+            <span className="flex items-center gap-1 sm:gap-2"><Globe className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--brand)] drop-shadow-[0_0_8px_rgba(0,230,118,0.4)]" /> 3 Hosts</span>
             <Link
               href="/world-cup/venues"
               className="underline hover:text-white transition-colors"
             >
-              View venue map <ArrowRight className="w-4 h-4 inline" />
+              Venues <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 inline" />
             </Link>
           </div>
         </div>

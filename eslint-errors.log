@@ -1,0 +1,335 @@
+
+/home/rexrain/Desktop/activesports/app/api/search/route.ts
+  21:26  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  39:36  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  46:32  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  71:48  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:5   warning  Unexpected console statement              no-console
+
+/home/rexrain/Desktop/activesports/app/api/sync/leagues/route.ts
+  16:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/auth/signin/page.tsx
+  51:55  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/home/rexrain/Desktop/activesports/app/countries/[slug]/page.tsx
+  4:38  error  'getCountries' is defined but never used    @typescript-eslint/no-unused-vars
+  4:52  error  'CURRENT_SEASON' is defined but never used  @typescript-eslint/no-unused-vars
+  7:10  error  'Globe' is defined but never used           @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/favorites/page.tsx
+   7:15  error  'Metadata' is defined but never used      @typescript-eslint/no-unused-vars
+  34:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  36:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/fixtures/page.tsx
+    4:8   error    'FallbackState' is defined but never used                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+    7:59  error    'ListFilter' is defined but never used                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+    7:76  error    'PlayCircle' is defined but never used                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+    7:88  error    'Globe' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   59:5   error    'fetchError' is assigned a value but never used                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  188:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/rexrain/Desktop/activesports/app/injuries/page.tsx
+   1:10  error  'Suspense' is defined but never used      @typescript-eslint/no-unused-vars
+   7:3   error  'Calendar' is defined but never used      @typescript-eslint/no-unused-vars
+  10:3   error  'ChevronRight' is defined but never used  @typescript-eslint/no-unused-vars
+  40:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/layout.tsx
+  147:3   error  ES2015 module syntax is preferred over namespaces  @typescript-eslint/no-namespace
+  149:28  error  Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  152:3   error  ES2015 module syntax is preferred over namespaces  @typescript-eslint/no-namespace
+  153:5   error  ES2015 module syntax is preferred over namespaces  @typescript-eslint/no-namespace
+  155:30  error  Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/leaderboard/page.tsx
+  3:31  error  'ArrowUpDown' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/league/[slug]/page.tsx
+   11:45  error  'ChevronDown' is defined but never used   @typescript-eslint/no-unused-vars
+  270:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/leagues/LeaguesGrid.tsx
+  20:10  error  'getCountryFlag' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+  70:21  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/rexrain/Desktop/activesports/app/leagues/LeaguesGrid.tsx:70:21
+  68 |
+  69 |   // Reset page when search/filter changes
+> 70 |   useEffect(() => { setPage(1); }, [search, countryFilter]);
+     |                     ^^^^^^^ Avoid calling setState() directly within an effect
+  71 |
+  72 |   return (
+  73 |     <div suppressHydrationWarning>  react-hooks/set-state-in-effect
+
+/home/rexrain/Desktop/activesports/app/leagues/[letter]/page.tsx
+  44:108  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  44:131  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  71:22   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  71:64   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  71:87   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/home/rexrain/Desktop/activesports/app/leagues/page.tsx
+   6:17  error  'Shield' is defined but never used        @typescript-eslint/no-unused-vars
+   6:25  error  'Zap' is defined but never used           @typescript-eslint/no-unused-vars
+  22:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  36:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  85:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/match/[slug]/page.tsx
+   68:5  warning  Unexpected console statement  no-console
+  115:5  warning  Unexpected console statement  no-console
+
+/home/rexrain/Desktop/activesports/app/odds/page.tsx
+  274:20  error  'leagueIdStr' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/page.tsx
+  110:21  error    'firstKickoff' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  120:23  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  125:39  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  151:30  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  161:31  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/rexrain/Desktop/activesports/app/player/[slug]/page.tsx
+   13:113  error  'Zap' is defined but never used           @typescript-eslint/no-unused-vars
+  313:67   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  441:26   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  441:43   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  450:15   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  451:19   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/players/page.tsx
+   1:10  error    'getTopScorers' is defined but never used  @typescript-eslint/no-unused-vars
+  23:24  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  34:30  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  47:18  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  59:33  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  60:53  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  61:34  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  73:52  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  79:40  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  98:5   warning  Unexpected console statement               no-console
+
+/home/rexrain/Desktop/activesports/app/sitemap.ts
+   46:20  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   53:37  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   62:12  error    'err' is defined but never used           @typescript-eslint/no-unused-vars
+   72:18  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   79:31  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   86:5   warning  Unexpected console statement              no-console
+   90:20  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   97:35  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  104:5   warning  Unexpected console statement              no-console
+
+/home/rexrain/Desktop/activesports/app/stats/leaders/page.tsx
+    1:10  error  'Suspense' is defined but never used      @typescript-eslint/no-unused-vars
+   41:9   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   42:9   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   55:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  146:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/team/[slug]/page.tsx
+  43:11  error  'idToSlug' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/teams/page.tsx
+    1:24  error    'MAJOR_LEAGUES' is defined but never used                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   16:16  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   51:48  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  102:24  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  110:17  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/rexrain/Desktop/activesports/app/transfers/page.tsx
+   15:3    error  'MAJOR_LEAGUES' is defined but never used                        @typescript-eslint/no-unused-vars
+   16:3    error  'CURRENT_SEASON' is defined but never used                       @typescript-eslint/no-unused-vars
+  123:111  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/home/rexrain/Desktop/activesports/app/venue/[slug]/page.tsx
+  4:20  error  'getTeam' is defined but never used         @typescript-eslint/no-unused-vars
+  4:29  error  'MAJOR_LEAGUES' is defined but never used   @typescript-eslint/no-unused-vars
+  4:44  error  'CURRENT_SEASON' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/world-cup/history/page.tsx
+  2:27  error  'Star' is defined but never used      @typescript-eslint/no-unused-vars
+  2:44  error  'Calendar' is defined but never used  @typescript-eslint/no-unused-vars
+  2:61  error  'Target' is defined but never used    @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/world-cup/page.tsx
+  3:83   error  'Calendar' is defined but never used    @typescript-eslint/no-unused-vars
+  3:93   error  'Users' is defined but never used       @typescript-eslint/no-unused-vars
+  3:100  error  'History' is defined but never used     @typescript-eslint/no-unused-vars
+  3:109  error  'LayoutGrid' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/world-cup/stats/page.tsx
+  2:33  error  'Users' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/app/world-cup/team/[slug]/page.tsx
+   15:27  error  'Calendar' is defined but never used      @typescript-eslint/no-unused-vars
+  197:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  238:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  292:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  387:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  398:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/app/world-cup/team/page.tsx
+  1:8   error  'Image' is defined but never used       @typescript-eslint/no-unused-vars
+  3:25  error  'ArrowRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/rexrain/Desktop/activesports/components/LiveMatchProvider.tsx
+  85:3  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/home/rexrain/Desktop/activesports/components/LiveMatchProvider.tsx:85:3
+  83 |   }, [fixtureId]);
+  84 |
+> 85 |   connectRef.current = connect;
+     |   ^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  86 |
+  87 |   useEffect(() => {
+  88 |     if (!initiallyLive) return;  react-hooks/refs
+
+/home/rexrain/Desktop/activesports/components/LiveMatchRow.tsx
+  47:11  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  72:11  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/rexrain/Desktop/activesports/components/MatchContent.tsx
+  244:9   error  'isFinished' is assigned a value but never used                  @typescript-eslint/no-unused-vars
+  433:77  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/home/rexrain/Desktop/activesports/components/Navbar.tsx
+  197:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/rexrain/Desktop/activesports/components/Navbar.tsx:197:7
+  195 |     
+  196 |     if (detectedTz) {
+> 197 |       setCurrentTz(detectedTz);
+      |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  198 |     }
+  199 |   }, []);
+  200 |  react-hooks/set-state-in-effect
+
+/home/rexrain/Desktop/activesports/components/SearchOverlay.tsx
+  72:6  warning  React Hook useEffect has a missing dependency: 'closeSearch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  95:9  warning  Unexpected console statement                                                                                    no-console
+
+/home/rexrain/Desktop/activesports/components/ThemeProvider.tsx
+  25:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/rexrain/Desktop/activesports/components/ThemeProvider.tsx:25:7
+  23 |     const stored = localStorage.getItem('theme') as Theme | null;
+  24 |     if (stored === 'dark' || stored === 'light') {
+> 25 |       setTheme(stored);
+     |       ^^^^^^^^ Avoid calling setState() directly within an effect
+  26 |     } else {
+  27 |       setTheme('dark');
+  28 |     }  react-hooks/set-state-in-effect
+
+/home/rexrain/Desktop/activesports/components/Widget.tsx
+  16:10  error  'WidgetSkeleton' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  69:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/rexrain/Desktop/activesports/components/Widget.tsx:69:5
+  67 |
+  68 |   useEffect(() => {
+> 69 |     setHasError(false);
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  70 |   }, [retryKey]);
+  71 |
+  72 |   useEffect(() => {  react-hooks/set-state-in-effect
+  93:31  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+/home/rexrain/Desktop/activesports/components/WorldCupCountdown.tsx
+  11:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/rexrain/Desktop/activesports/components/WorldCupCountdown.tsx:11:5
+   9 |
+  10 |   useEffect(() => {
+> 11 |     setCd(getCountdown(WORLD_CUP_DATE));
+     |     ^^^^^ Avoid calling setState() directly within an effect
+  12 |     const timer = setInterval(() => setCd(getCountdown(WORLD_CUP_DATE)), 1000);
+  13 |     return () => clearInterval(timer);
+  14 |   }, []);  react-hooks/set-state-in-effect
+
+/home/rexrain/Desktop/activesports/components/auth/AuthModalProvider.tsx
+  24:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/rexrain/Desktop/activesports/components/auth/AuthModalProvider.tsx:24:7
+  22 |   useEffect(() => {
+  23 |     if (session) {
+> 24 |       setIsOpen(false);
+     |       ^^^^^^^^^ Avoid calling setState() directly within an effect
+  25 |     }
+  26 |   }, [session]);
+  27 |  react-hooks/set-state-in-effect
+
+/home/rexrain/Desktop/activesports/components/home/AIMatchRoast.tsx
+  42:7  warning  Unexpected console statement  no-console
+
+/home/rexrain/Desktop/activesports/components/home/HeroCarousel.tsx
+    8:10  error    'matchSlug' is defined but never used                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  215:23  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  269:23  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/rexrain/Desktop/activesports/components/home/TransferHub.tsx
+   39:27   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   66:21   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   66:111  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   66:167  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  101:27   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/rexrain/Desktop/activesports/components/players/PlayersDirectory.tsx
+  177:20  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  196:37  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/rexrain/Desktop/activesports/lib/apifootball.ts
+   52:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unsafe-call' or '@typescript-eslint/no-unsafe-member-access')
+   63:5  warning  Unexpected console statement                                                                                                                          no-console
+   89:7  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unsafe-call' or '@typescript-eslint/no-unsafe-member-access')
+  272:5  warning  Unexpected console statement                                                                                                                          no-console
+
+/home/rexrain/Desktop/activesports/lib/content-generator.ts
+  26:5  warning  Unexpected console statement  no-console
+
+✖ 142 problems (114 errors, 28 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+

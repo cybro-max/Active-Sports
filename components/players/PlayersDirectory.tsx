@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { Search, Filter, ArrowUpDown, User, Globe, Trophy, Calendar, Star, Activity } from 'lucide-react';
+import { Search, Filter, ArrowUpDown, Globe, Trophy, Calendar, Star, Activity } from 'lucide-react';
 import { toSlug } from '@/lib/slug';
 
 interface Player {
@@ -164,7 +163,7 @@ export default function PlayersDirectory({ initialPlayers }: { initialPlayers: P
 
       {/* ── PLAYER GRID (PREVIOUS STYLE) ────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-        {filtered.slice(0, displayLimit).map((p: any, i) => (
+        {filtered.slice(0, displayLimit).map((p: Player, i) => (
           <Link 
             key={p.id} 
             href={`/player/${toSlug(p.name)}`}

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, User, Shield, Trophy, Command, ArrowRight, History, Loader2 } from 'lucide-react';
+import { Search, User, Shield, Command, ArrowRight, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
 interface SearchResult {
@@ -47,6 +47,12 @@ function SearchOverlayContent() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const closeSearch = useCallback(() => {
+    setOpen(false);
+    setQuery('');
+    setResults({ players: [], teams: [] });
+  }, [setOpen]);
+
   // Hotkey listener (⌘K or /)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -58,28 +64,24 @@ function SearchOverlayContent() {
         e.preventDefault();
         setOpen(true);
       }
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') closeSearch();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, setOpen]);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-      setSelectedIndex(0);
-    } else {
-      setQuery('');
-      setResults({ players: [], teams: [] });
+      setTimeout(() => {
+        inputRef.current?.focus();
+        setSelectedIndex(0);
+      }, 100);
     }
   }, [isOpen]);
 
-  // Debounced Search
   useEffect(() => {
     if (query.length < 2) {
-      setResults({ players: [], teams: [] });
       return;
     }
 
@@ -103,7 +105,7 @@ function SearchOverlayContent() {
 
   const handleNavigate = (url: string) => {
     router.push(url);
-    setOpen(false);
+    closeSearch();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -127,7 +129,7 @@ function SearchOverlayContent() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4"
         >
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setOpen(false)} />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={closeSearch} />
 
           <motion.div
             initial={{ scale: 0.95, y: -20, opacity: 0 }}
@@ -166,7 +168,7 @@ function SearchOverlayContent() {
 
               {query && allResults.length === 0 && !isLoading && (
                 <div className="py-12 text-center text-[var(--text-muted)]">
-                  No results found for "<span className="text-white">{query}</span>"
+                  No results found for &ldquo;<span className="text-white">{query}</span>&rdquo;
                 </div>
               )}
 

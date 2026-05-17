@@ -16,15 +16,14 @@ export function AuthModalProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session, status } = useSession();
 
-  // Close modal automatically if they log in successfully
-  useEffect(() => {
-    if (session) {
-      setIsOpen(false);
-    }
-  }, [session]);
-
   const openAuthModal = () => setIsOpen(true);
   const closeAuthModal = () => setIsOpen(false);
+
+  useEffect(() => {
+    if (session) {
+      setTimeout(() => setIsOpen(false), 0);
+    }
+  }, [session]);
 
   return (
     <AuthModalContext.Provider value={{ openAuthModal, closeAuthModal, isAuthModalOpen: isOpen }}>

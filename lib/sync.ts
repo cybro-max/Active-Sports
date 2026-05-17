@@ -1,34 +1,36 @@
 import { prisma } from './prisma';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = prisma as any;
 
 /**
  * Syncs a single team's basic info to the database.
  */
-export async function syncTeam(data: any) {
-  if (!data?.team?.id) return;
-  const { team, venue } = data;
+export async function syncTeam(data: Record<string, unknown>) {
+  const t = data.team as { id: number; name: string; logo: string; country?: string; leagueId?: number; leagueName?: string } | undefined;
+  const v = data.venue as { name?: string; id?: number } | undefined;
+  if (!t?.id) return;
   
   return await db.team.upsert({
-    where: { id: team.id },
+    where: { id: t.id },
     update: {
-      name: team.name,
-      logo: team.logo,
-      country: team.country,
-      leagueId: team.leagueId,
-      leagueName: team.leagueName,
-      venueName: venue?.name,
-      venueId: venue?.id,
+      name: t.name,
+      logo: t.logo,
+      country: t.country,
+      leagueId: t.leagueId,
+      leagueName: t.leagueName,
+      venueName: v?.name,
+      venueId: v?.id,
     },
     create: {
-      id: team.id,
-      name: team.name,
-      logo: team.logo,
-      country: team.country,
-      leagueId: team.leagueId,
-      leagueName: team.leagueName,
-      venueName: venue?.name,
-      venueId: venue?.id,
+      id: t.id,
+      name: t.name,
+      logo: t.logo,
+      country: t.country,
+      leagueId: t.leagueId,
+      leagueName: t.leagueName,
+      venueName: v?.name,
+      venueId: v?.id,
     },
   });
 }
@@ -36,25 +38,26 @@ export async function syncTeam(data: any) {
 /**
  * Syncs a full squad and its players to the database.
  */
-export async function syncSquad(teamId: number, data: any) {
-  if (!data?.players) return;
+export async function syncSquad(teamId: number, data: Record<string, unknown>) {
+  const players = data.players as Array<{ id: number; name: string; age?: number; number?: number; position?: string; photo?: string }> | undefined;
+  if (!players) return;
   
-  // 1. Ensure team exists (minimal)
+  const t = data.team as { name: string; logo: string } | undefined;
+  
   await db.team.upsert({
     where: { id: teamId },
     update: {
-      leagueName: data.leagueName,
+      leagueName: data.leagueName as string | undefined,
     },
     create: {
       id: teamId,
-      name: data.team.name,
-      logo: data.team.logo,
-      leagueName: data.leagueName,
+      name: t?.name ?? 'Unknown',
+      logo: t?.logo ?? '',
+      leagueName: data.leagueName as string | undefined,
     }
   });
 
-  // 2. Upsert all players in the squad
-  const batch = data.players.map((p: any) => 
+  const batch = players.map((p) => 
     db.player.upsert({
       where: { id: p.id },
       update: {
@@ -83,12 +86,12 @@ export async function syncSquad(teamId: number, data: any) {
 /**
  * Syncs player profile data (usually from /players endpoint).
  */
-export async function syncPlayer(data: any) {
-  if (!data?.player?.id) return;
-  const { player, statistics } = data;
+export async function syncPlayer(data: Record<string, unknown>) {
+  const player = data.player as { id: number; name: string; firstname?: string; lastname?: string; age?: number; nationality?: string; height?: string; weight?: string; photo?: string } | undefined;
+  const statistics = data.statistics as Array<{ team?: { id: number; name: string; logo: string }; games?: { position?: string; number?: number } }> | undefined;
+  if (!player?.id) return;
   const stats = statistics?.[0];
   
-  // Sync team first if available
   if (stats?.team?.id) {
     await db.team.upsert({
       where: { id: stats.team.id },
@@ -133,7 +136,7 @@ export async function syncPlayer(data: any) {
  * High-level sync function to be called from the search API.
  * Syncs multiple players/teams at once.
  */
-export async function syncSearchResults(results: any[]) {
+export async function syncSearchResults(results: Record<string, unknown>[]) {
   const promises = results.map(r => {
     if (r.player) return syncPlayer(r);
     if (r.team) return syncTeam(r);

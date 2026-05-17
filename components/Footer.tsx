@@ -6,12 +6,7 @@ import Image from 'next/image';
 import { MessageSquare, AtSign, Camera, Play, Globe } from 'lucide-react';
 
 export default function Footer() {
-  const [mounted, setMounted] = React.useState(false);
   const currentYear = new Date().getFullYear();
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const sections = [
     {
@@ -146,7 +141,7 @@ export default function Footer() {
             <span>All times are displayed in your local timezone.</span>
           </div>
           <div className="text-[var(--text-muted)] text-xs font-semibold">
-            © {mounted ? currentYear : '2024'} ActiveSports Global Ltd. All rights reserved.
+            © {currentYear} ActiveSports Global Ltd. All rights reserved.
           </div>
         </div>
       </div>

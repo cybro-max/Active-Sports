@@ -56,11 +56,6 @@ export default function HeroCarousel({ liveFixtures = [], todayFixtures = [], ti
     setCurrent(c => (c - 1 + matches.length) % matches.length);
   }, [matches.length]);
 
-  const paginate = (newDirection: number) => {
-    setDirection(newDirection);
-    setCurrent(c => (c + newDirection + matches.length) % matches.length);
-  };
-
   useEffect(() => {
     if (isPaused || matches.length <= 1) return;
     const timer = setInterval(next, 8000);
@@ -119,7 +114,6 @@ export default function HeroCarousel({ liveFixtures = [], todayFixtures = [], ti
 
   const m = matches[current];
   const isLive = ['1H', '2H', 'HT', 'ET', 'P'].includes(m.fixture.status.short);
-  const link = `/match/${matchSlug(m.teams.home.name, m.teams.away.name)}`;
 
   const variants = {
     enter: (direction: number) => ({
@@ -173,9 +167,8 @@ export default function HeroCarousel({ liveFixtures = [], todayFixtures = [], ti
               fill 
               priority
               className={`object-cover transition-all duration-[2000ms] scale-110 group-hover:scale-100 ${isLive ? 'opacity-40 mix-blend-screen' : 'opacity-30 grayscale brightness-50'}`}
-              onError={(e: any) => {
-                // Fallback if venue image is missing on the server
-                e.target.src = isLive ? "/media/hero/live.png" : "/media/hero/stadium.png";
+              onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                e.currentTarget.src = isLive ? "/media/hero/live.png" : "/media/hero/stadium.png";
               }}
             />
             {/* Cinematic Overlays */}
@@ -187,98 +180,99 @@ export default function HeroCarousel({ liveFixtures = [], todayFixtures = [], ti
             <div className="absolute top-0 left-[-100%] w-[200%] h-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent skew-x-[-20deg] animate-shine pointer-events-none" />
           </div>
 
-          {/* Content Layer */}
-          <Link href={link} className="relative h-full flex flex-col items-center justify-center px-6 sm:px-16">
-            {/* Floating Info Badge */}
-            <motion.div 
-              initial={{ opacity: 0, y: -30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="absolute top-6 sm:top-12 flex flex-col items-center gap-4"
-            >
-               <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-2xl">
-                  {isLive ? (
-                    <div className="flex items-center gap-2 px-2 py-0.5 bg-red-500 rounded-full animate-pulse">
-                      <span className="text-[8px] font-black text-white uppercase tracking-tighter">LIVE</span>
-                    </div>
-                  ) : (
-                    <Trophy className="w-4 h-4 text-[var(--brand)]" />
-                  )}
-                  <div className="w-[1px] h-4 bg-white/10" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">{m.league.name}</span>
-               </div>
-            </motion.div>
-
-            {/* Match Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center justify-center gap-6 sm:gap-10 md:gap-20 w-full max-w-7xl px-4 mt-8 sm:mt-0">
-              {/* Home Team */}
+          <motion.div className="relative h-full flex flex-col items-center justify-center pt-16 pb-8 px-4 sm:px-20 overflow-hidden">
+            <Link href={`/match/${m.fixture.id}`} className="w-full flex flex-col items-center">
+              {/* League Badge - More compact on mobile */}
               <motion.div 
-                initial={{ opacity: 0, x: -80, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ delay: 0.2, type: 'spring' }}
-                className="flex flex-col items-center gap-10 order-2 md:order-1"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-12 sm:top-12 left-1/2 -translate-x-1/2 z-20"
               >
-                 <div className="relative group/logo">
-                    <div className="absolute inset-0 bg-white rounded-full blur-[60px] sm:blur-[100px] opacity-10 group-hover:opacity-25 transition-opacity" />
-                    <img src={m.teams.home.logo} alt={m.teams.home.name} className="w-20 h-20 sm:w-32 md:w-48 sm:h-32 md:h-48 object-contain relative drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)] sm:drop-shadow-[0_40px_80px_rgba(0,0,0,1)] transition-all group-hover:scale-110 group-hover:-rotate-3 duration-1000" />
-                 </div>
-                 <h2 className="text-xl sm:text-2xl md:text-4xl font-black text-white text-center tracking-tighter leading-tight max-w-[200px] sm:max-w-[280px] drop-shadow-2xl">{m.teams.home.name}</h2>
-              </motion.div>
-
-              {/* Central Scoreboard */}
-              <div className="flex flex-col items-center justify-center z-10 order-1 md:order-2">
-                {m.fixture.status.short === 'NS' ? (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center"
-                  >
-                    <div className="text-5xl sm:text-8xl md:text-[160px] font-black text-white tracking-tighter drop-shadow-[0_30px_60px_rgba(0,0,0,1)] leading-[0.9]">
-                      {formatMatchTime(m.fixture.date, timezone)}
-                    </div>
-                    <div className="mt-4 sm:mt-8 flex items-center gap-3 sm:gap-4 px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/[0.05] backdrop-blur-3xl border border-white/10 text-white font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[8px] sm:text-[10px] shadow-2xl">
-                      <Calendar className="w-3.5 h-3.5 sm:w-4 h-4 text-[var(--brand)]" /> {formatMatchDate(m.fixture.date, timezone)}
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col items-center"
-                  >
-                    <div className="flex items-center gap-4 sm:gap-10 md:gap-20">
-                      <span className="text-5xl sm:text-8xl md:text-[180px] font-black text-white drop-shadow-[0_30px_70px_rgba(0,0,0,1)] tabular-nums leading-none tracking-tighter">{m.goals.home ?? 0}</span>
-                      <div className="flex flex-col items-center gap-1 sm:gap-2 mb-2 sm:mb-4">
-                        <span className="text-2xl sm:text-7xl md:text-9xl text-white/10 font-black animate-pulse">:</span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl">
+                    {isLive ? (
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-red-500 rounded-full animate-pulse">
+                        <span className="text-[7px] font-black text-white uppercase tracking-tighter">LIVE</span>
                       </div>
-                      <span className="text-5xl sm:text-8xl md:text-[180px] font-black text-white drop-shadow-[0_30px_70px_rgba(0,0,0,1)] tabular-nums leading-none tracking-tighter">{m.goals.away ?? 0}</span>
-                    </div>
-                    <div className={`mt-8 px-8 sm:px-12 py-3.5 sm:py-4 rounded-full border backdrop-blur-3xl shadow-2xl transition-all ${
-                        isLive ? 'bg-red-500/15 border-red-500/30' : 'bg-white/5 border-white/10'
-                    }`}>
-                      <span className={`flex items-center gap-3 text-[10px] sm:text-xs font-black uppercase tracking-[0.5em] ${isLive ? 'text-red-400' : 'text-[var(--brand)]'}`}>
-                        {isLive && <Activity className="w-4 h-4 animate-spin-slow" />}
-                        {getStatusLabel(m.fixture.status.short, m.fixture.status.elapsed)}
-                      </span>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Away Team */}
-              <motion.div 
-                initial={{ opacity: 0, x: 80, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ delay: 0.2, type: 'spring' }}
-                className="flex flex-col items-center gap-10 order-3"
-              >
-                 <div className="relative group/logo">
-                    <div className="absolute inset-0 bg-cyan-500 rounded-full blur-[60px] sm:blur-[100px] opacity-10 group-hover:opacity-25 transition-opacity" />
-                    <img src={m.teams.away.logo} alt={m.teams.away.name} className="w-20 h-20 sm:w-32 md:w-48 sm:h-32 md:h-48 object-contain relative drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)] sm:drop-shadow-[0_40px_80px_rgba(0,0,0,1)] transition-all group-hover:scale-110 group-hover:rotate-3 duration-1000" />
-                 </div>
-                 <h2 className="text-xl sm:text-2xl md:text-4xl font-black text-white text-center tracking-tighter leading-tight max-w-[200px] sm:max-w-[280px] drop-shadow-2xl">{m.teams.away.name}</h2>
+                    ) : (
+                      <Trophy className="w-3 h-3 text-[var(--brand)]" />
+                    )}
+                    <div className="w-[1px] h-3 bg-white/10" />
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] text-white/80">{m.league.name}</span>
+                  </div>
               </motion.div>
-            </div>
-          </Link>
+
+              {/* Match Container - Improved Flex Layout for Mobile */}
+              <div className="flex items-center justify-between gap-1 sm:gap-10 md:gap-20 w-full max-w-7xl mt-12 sm:mt-0">
+                {/* Home Team */}
+                <motion.div 
+                  initial={{ opacity: 0, x: -80, scale: 0.8 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring' }}
+                  className="flex-1 flex flex-col items-center gap-2 sm:gap-10"
+                >
+                    <div className="relative group/logo">
+                      <div className="absolute inset-0 bg-white rounded-full blur-[30px] sm:blur-[100px] opacity-10 group-hover:opacity-25 transition-opacity" />
+                      <img src={m.teams.home.logo} alt={m.teams.home.name} className="w-16 h-16 sm:w-32 md:w-48 sm:h-32 md:h-48 object-contain relative drop-shadow-2xl transition-all group-hover:scale-110 duration-1000" />
+                    </div>
+                    <h2 className="text-[10px] sm:text-xl md:text-3xl font-black text-white text-center tracking-tight leading-tight max-w-[100px] sm:max-w-[280px] drop-shadow-2xl uppercase line-clamp-2">{m.teams.home.name}</h2>
+                </motion.div>
+
+                {/* Central Scoreboard */}
+                <div className="flex flex-col items-center justify-center z-10 shrink-0 min-w-[100px] sm:min-w-0">
+                  {m.fixture.status.short === 'NS' ? (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="text-4xl sm:text-8xl md:text-[160px] font-black text-white tracking-tighter drop-shadow-[0_30px_60px_rgba(0,0,0,1)] leading-none">
+                        {formatMatchTime(m.fixture.date, timezone)}
+                      </div>
+                      <div className="mt-2 sm:mt-8 flex items-center gap-1.5 sm:gap-4 px-2 sm:px-8 py-1 sm:py-3.5 rounded-lg sm:rounded-2xl bg-white/[0.05] backdrop-blur-3xl border border-white/10 text-white font-black uppercase tracking-[0.1em] sm:tracking-[0.4em] text-[7px] sm:text-[10px]">
+                        <Calendar className="w-2.5 h-2.5 sm:w-4 h-4 text-[var(--brand)]" /> {formatMatchDate(m.fixture.date, timezone)}
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="flex items-center gap-2 sm:gap-10 md:gap-20">
+                        <span className="text-4xl sm:text-8xl md:text-[180px] font-black text-white drop-shadow-[0_30px_70px_rgba(0,0,0,1)] tabular-nums leading-none tracking-tighter">{m.goals.home ?? 0}</span>
+                        <div className="flex flex-col items-center gap-0.5 sm:gap-2">
+                          <span className="text-lg sm:text-7xl md:text-9xl text-white/10 font-black animate-pulse">:</span>
+                        </div>
+                        <span className="text-4xl sm:text-8xl md:text-[180px] font-black text-white drop-shadow-[0_30px_70px_rgba(0,0,0,1)] tabular-nums leading-none tracking-tighter">{m.goals.away ?? 0}</span>
+                      </div>
+                      <div className={`mt-3 sm:mt-8 px-3 sm:px-12 py-1.5 sm:py-4 rounded-full border backdrop-blur-3xl shadow-2xl transition-all ${
+                          isLive ? 'bg-red-500/15 border-red-500/30' : 'bg-white/5 border-white/10'
+                      }`}>
+                        <span className={`flex items-center gap-1.5 text-[8px] sm:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.5em] ${isLive ? 'text-red-400' : 'text-[var(--brand)]'}`}>
+                          {isLive && <Activity className="w-2.5 h-2.5 animate-spin-slow" />}
+                          {getStatusLabel(m.fixture.status.short, m.fixture.status.elapsed)}
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Away Team */}
+                <motion.div 
+                  initial={{ opacity: 0, x: 80, scale: 0.8 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring' }}
+                  className="flex-1 flex flex-col items-center gap-2 sm:gap-10"
+                >
+                    <div className="relative group/logo">
+                      <div className="absolute inset-0 bg-cyan-500 rounded-full blur-[30px] sm:blur-[100px] opacity-10 group-hover:opacity-25 transition-opacity" />
+                      <img src={m.teams.away.logo} alt={m.teams.away.name} className="w-16 h-16 sm:w-32 md:w-48 sm:h-32 md:h-48 object-contain relative drop-shadow-2xl transition-all group-hover:scale-110 duration-1000" />
+                    </div>
+                    <h2 className="text-[10px] sm:text-xl md:text-3xl font-black text-white text-center tracking-tight leading-tight max-w-[100px] sm:max-w-[280px] drop-shadow-2xl uppercase line-clamp-2">{m.teams.away.name}</h2>
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
         </motion.div>
       </AnimatePresence>
 
@@ -287,7 +281,7 @@ export default function HeroCarousel({ liveFixtures = [], todayFixtures = [], ti
         <>
           <button 
             onClick={(e) => { e.preventDefault(); prev(); }}
-            className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-8 rounded-2xl sm:rounded-[32px] bg-white/[0.02] backdrop-blur-3xl border border-white/5 text-white hover:bg-[var(--brand)] hover:text-black hover:border-[var(--brand)] transition-all group shadow-[0_20px_50px_rgba(0,0,0,0.5)] hidden sm:flex"
+            className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-8 rounded-2xl sm:rounded-[32px] bg-white/[0.02] backdrop-blur-3xl border border-white/5 text-white hover:bg-[var(--brand)] hover:text-black hover:border-[var(--brand)] transition-all group shadow-[0_20px_50px_rgba(0,0,0,0.5)] hidden lg:flex"
           >
             <ChevronLeft className="w-5 h-5 sm:w-10 sm:h-10 group-hover:-translate-x-2 transition-transform" />
           </button>

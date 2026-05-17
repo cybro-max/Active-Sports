@@ -4,7 +4,6 @@ import {
   BarChart, 
   Bar, 
   XAxis, 
-  YAxis, 
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
@@ -30,11 +29,6 @@ export default function TeamPerformanceChart({ stats }: TeamStatsProps) {
     { name: 'Wins', value: stats.fixtures.wins.total, color: 'var(--success)' },
     { name: 'Draws', value: stats.fixtures.draws.total, color: 'var(--warning)' },
     { name: 'Losses', value: stats.fixtures.loses.total, color: 'var(--danger)' },
-  ];
-
-  const goalData = [
-    { name: 'Goals For', value: stats.goals.for.total.total, color: 'var(--success)' },
-    { name: 'Goals Against', value: stats.goals.against.total.total, color: 'var(--danger)' },
   ];
 
   return (

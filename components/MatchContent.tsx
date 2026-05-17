@@ -1,26 +1,26 @@
 'use client';
 
-import { Zap, BarChart3, Users, RefreshCcw, Info, Swords, MapPin, Calendar, Clock, Trophy, Search, Activity } from 'lucide-react';
+import { Zap, Users, RefreshCcw, Info, Swords, MapPin, Activity } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatMatchDate, formatMatchTime, getStatusLabel } from '@/lib/utils';
+import { formatMatchTime } from '@/lib/utils';
 import { LiveMatchProvider, useMatchLive } from './LiveMatchProvider';
 import MoreMatchesSection from './MoreMatchesSection';
 import OddsTable from './OddsTable';
-import { toSlug, matchSlug } from '@/lib/slug';
-import type { Fixture, FixtureEvent, FixtureStatistics } from '@/lib/apifootball';
+import { toSlug } from '@/lib/slug';
+import type { Fixture, FixtureEvent, FixtureStatistics, FixtureLineup, Prediction, OddsResponse } from '@/lib/apifootball';
 
 interface MatchContentProps {
   fixtureId: number;
   fixture: Fixture;
   stats: FixtureStatistics[];
   events: FixtureEvent[];
-  lineups: any[];
-  h2hFixtures: any[];
-  predictionData: any;
-  oddsData: any;
-  liveOddsData: any[];
+  lineups: FixtureLineup[];
+  h2hFixtures: Fixture[];
+  predictionData: Prediction | null;
+  oddsData: OddsResponse | null;
+  liveOddsData: OddsResponse[];
   isLive: boolean;
   moreLive: Fixture[];
   moreToday: Fixture[];
@@ -29,10 +29,8 @@ interface MatchContentProps {
 }
 
 export default function MatchContent(props: MatchContentProps) {
-  const { fixture: f, teams, goals, league, score } = props.fixture;
+  const { fixture: f, teams, league } = props.fixture;
   const fixtureId = props.fixtureId;
-  const isUpcoming = f.status.short === 'NS' || f.status.short === 'TBD';
-  const isFinished = ['FT', 'AET', 'PEN'].includes(f.status.short);
   const isLive = props.isLive;
 
   const jsonLd = {
@@ -96,7 +94,7 @@ export default function MatchContent(props: MatchContentProps) {
           {/* Head to Head */}
           <section className="card fade-up">
             <h2 className="section-title flex items-center gap-2"><Swords className="w-4 h-4 text-[var(--brand)]" /> Head to Head</h2>
-            <H2HFixtures fixtures={props.h2hFixtures} teamIds={{ home: teams.home.id, away: teams.away.id }} homeName={teams.home.name} awayName={teams.away.name} />
+            <H2HFixtures fixtures={props.h2hFixtures} teamIds={{ home: teams.home.id, away: teams.away.id }} />
           </section>
 
           {/* Match Info */}
@@ -181,7 +179,7 @@ export default function MatchContent(props: MatchContentProps) {
           </section>
 
           {/* Odds */}
-          {props.oddsData?.bookmakers?.length > 0 && (
+          {props.oddsData?.bookmakers && props.oddsData.bookmakers.length > 0 && (
             <section className="card fade-up overflow-hidden">
               <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
                 <h2 className="section-title mb-0">Match Odds</h2>
@@ -191,7 +189,7 @@ export default function MatchContent(props: MatchContentProps) {
           )}
 
           {/* Live Odds */}
-          {isLive && props.liveOddsData.length > 0 && props.liveOddsData[0]?.bookmakers?.length > 0 && (
+          {isLive && props.liveOddsData.length > 0 && props.liveOddsData[0]?.bookmakers && props.liveOddsData[0].bookmakers.length > 0 && (
             <section className="card fade-up overflow-hidden">
               <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
                 <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" /><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" /></span>
@@ -253,44 +251,44 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[var(--accent)]/10 rounded-full blur-[100px] opacity-20" />
       </div>
 
-      <div className="relative px-8 py-12">
+      <div className="relative px-3 sm:px-8 py-6 sm:py-12">
         <div className="flex flex-col items-center">
           {/* League Info */}
-          <div className="flex items-center gap-2 mb-6 sm:mb-8 bg-white/5 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border border-white/5">
-            <Image src={f.league.logo} alt={f.league.name} width={14} height={14} className="opacity-80" />
+          <div className="flex items-center gap-2 mb-6 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+            <Image src={f.league.logo} alt={f.league.name} width={12} height={12} className="opacity-80" />
             <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-white/40">{f.league.name}</span>
           </div>
 
           <div className="w-full flex items-center justify-between max-w-4xl mx-auto">
             {/* Home Team */}
             <div className="flex-1 flex flex-col items-center text-center">
-              <div className="w-16 h-16 sm:w-32 sm:h-32 relative mb-4 sm:mb-6 group">
+              <div className="w-12 h-12 sm:w-32 sm:h-32 relative mb-3 sm:mb-6 group">
                 <div className="absolute inset-0 bg-white/5 rounded-full scale-110 group-hover:scale-125 transition-transform duration-500 blur-xl opacity-0 group-hover:opacity-100" />
                 <Image src={f.teams.home.logo} alt={f.teams.home.name} fill className="object-contain relative drop-shadow-2xl" />
               </div>
-              <h2 className="text-xs sm:text-xl font-black text-white tracking-tight uppercase max-w-[80px] sm:max-w-[160px] leading-tight">{f.teams.home.name}</h2>
+              <h2 className="text-[9px] sm:text-xl font-black text-white tracking-tight uppercase max-w-[65px] sm:max-w-[160px] leading-tight line-clamp-2">{f.teams.home.name}</h2>
             </div>
 
             {/* Score Center */}
-            <div className="flex flex-col items-center px-4 sm:px-12">
-              <div className="flex items-center gap-4 sm:gap-8 mb-4">
+            <div className="flex flex-col items-center px-1 sm:px-12 shrink-0 min-w-[80px]">
+              <div className="flex items-center gap-2 sm:gap-8 mb-3 sm:mb-4">
                 <AnimatePresence mode="wait">
                   <motion.span 
                     key={f.goals.home}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-4xl sm:text-8xl font-black font-display tracking-tighter text-white"
+                    className="text-3xl sm:text-8xl font-black font-display tracking-tighter text-white"
                   >
                     {f.goals.home ?? 0}
                   </motion.span>
                 </AnimatePresence>
-                <span className="text-2xl sm:text-4xl font-black text-white/10 mt-2">:</span>
+                <span className="text-xl sm:text-4xl font-black text-white/10 mt-1 sm:mt-2">:</span>
                 <AnimatePresence mode="wait">
                   <motion.span 
                     key={f.goals.away}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-4xl sm:text-8xl font-black font-display tracking-tighter text-white"
+                    className="text-3xl sm:text-8xl font-black font-display tracking-tighter text-white"
                   >
                     {f.goals.away ?? 0}
                   </motion.span>
@@ -299,16 +297,16 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
 
               {/* Status Badge */}
               <div className="flex flex-col items-center">
-                <div className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border flex items-center gap-2 ${
+                <div className={`px-2 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl border flex items-center gap-1 sm:gap-2 ${
                   isLive ? 'bg-[var(--brand)]/10 border-[var(--brand)]/20' : 'bg-white/5 border-white/10'
                 }`}>
                   {isLive && (
-                    <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
+                    <span className="relative flex h-1 w-1 sm:h-2 sm:w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--brand)] opacity-75" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-[var(--brand)]" />
+                      <span className="relative inline-flex rounded-full h-1 w-1 sm:h-2 sm:w-2 bg-[var(--brand)]" />
                     </span>
                   )}
-                  <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${
+                  <span className={`text-[7px] sm:text-[10px] font-black uppercase tracking-widest ${
                     isLive ? 'text-[var(--brand)]' : 'text-white/60'
                   }`}>
                     {f.fixture.status.short === 'NS' 
@@ -317,18 +315,18 @@ function LiveHeroScoreboard({ timezone }: { timezone?: string | undefined }) {
                   </span>
                 </div>
                 {isLive && !connected && (
-                  <span className="text-[9px] text-white/20 mt-2 uppercase font-bold tracking-widest animate-pulse">Syncing...</span>
+                  <span className="text-[7px] text-white/20 mt-1 uppercase font-bold tracking-widest animate-pulse">Syncing...</span>
                 )}
               </div>
             </div>
 
             {/* Away Team */}
             <div className="flex-1 flex flex-col items-center text-center">
-              <div className="w-16 h-16 sm:w-32 sm:h-32 relative mb-4 sm:mb-6 group">
+              <div className="w-12 h-12 sm:w-32 sm:h-32 relative mb-3 sm:mb-6 group">
                 <div className="absolute inset-0 bg-white/5 rounded-full scale-110 group-hover:scale-125 transition-transform duration-500 blur-xl opacity-0 group-hover:opacity-100" />
                 <Image src={f.teams.away.logo} alt={f.teams.away.name} fill className="object-contain relative drop-shadow-2xl" />
               </div>
-              <h2 className="text-xs sm:text-xl font-black text-white tracking-tight uppercase max-w-[80px] sm:max-w-[160px] leading-tight">{f.teams.away.name}</h2>
+              <h2 className="text-[9px] sm:text-xl font-black text-white tracking-tight uppercase max-w-[65px] sm:max-w-[160px] leading-tight line-clamp-2">{f.teams.away.name}</h2>
             </div>
           </div>
         </div>
@@ -357,8 +355,8 @@ function LiveQuickStats() {
       {types.map(type => {
         const homeVal = getStat(0, type.key);
         const awayVal = getStat(1, type.key);
-        const hNum = typeof homeVal === 'string' ? parseInt(homeVal) : homeVal;
-        const aNum = typeof awayVal === 'string' ? parseInt(awayVal) : awayVal;
+        const hNum = typeof homeVal === 'string' ? parseInt(homeVal) || 0 : (homeVal as number);
+        const aNum = typeof awayVal === 'string' ? parseInt(awayVal) || 0 : (awayVal as number);
         const total = hNum + aNum || 1;
         const hPct = Math.round((hNum / total) * 100);
 
@@ -406,7 +404,7 @@ function LiveTimelineSection() {
                 <Zap className="w-2 h-2 text-black fill-black" />
               </div>
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-white/10 px-2 py-1 rounded text-[9px] font-bold text-white backdrop-blur-sm pointer-events-none">
-                {e.player.name} ({e.time.elapsed}')
+                {e.player.name} ({e.time.elapsed}&apos;)
               </div>
             </div>
           );
@@ -487,9 +485,10 @@ function LiveStatsSection() {
         const homeVal = getStat(0, type);
         const awayVal = getStat(1, type);
         
-        const parseValue = (v: any) => {
-          if (typeof v === 'string' && v.includes('%')) return parseInt(v);
-          return typeof v === 'string' ? parseInt(v) : v;
+        const parseValue = (v: string | number | null): number => {
+          if (typeof v === 'string' && v.includes('%')) return parseInt(v) || 0;
+          if (typeof v === 'string') return parseInt(v) || 0;
+          return v ?? 0;
         };
 
         const hNum = parseValue(homeVal);
@@ -521,7 +520,7 @@ function LiveStatsSection() {
   );
 }
 
-function LineupView({ lineups }: { lineups: any[] }) {
+function LineupView({ lineups }: { lineups: FixtureLineup[] }) {
   if (!lineups || !lineups.length) return (
     <div className="card p-12 flex flex-col items-center justify-center text-center opacity-50">
       <Users className="w-8 h-8 text-[var(--brand)] mb-4" />
@@ -549,7 +548,7 @@ function LineupView({ lineups }: { lineups: any[] }) {
 
           <div className="space-y-2">
             <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-4 ml-1">Starting XI</h4>
-            {l.startXI.map((p: any) => (
+            {l.startXI.map((p: { player: { id: number; number: number; name: string; pos: string } }) => (
               <div key={p.player.id} className="card p-3 flex items-center justify-between group hover:border-white/10 transition-all">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center">
@@ -568,7 +567,7 @@ function LineupView({ lineups }: { lineups: any[] }) {
             <div className="space-y-2">
               <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-4 mt-8 ml-1">Substitutes</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {l.substitutes.map((p: any) => (
+                {l.substitutes.map((p: { player: { id: number; number: number; name: string } }) => (
                   <div key={p.player.id} className="bg-white/5 p-2 rounded-xl border border-white/5 flex items-center gap-3">
                     <span className="text-[10px] font-black text-white/20 w-4 text-center">{p.player.number}</span>
                     <span className="text-[11px] font-bold text-white/60 truncate">{p.player.name}</span>
@@ -583,7 +582,7 @@ function LineupView({ lineups }: { lineups: any[] }) {
   );
 }
 
-function H2HFixtures({ fixtures, teamIds, homeName, awayName }: { fixtures: any[], teamIds: any, homeName: string, awayName: string }) {
+function H2HFixtures({ fixtures, teamIds }: { fixtures: Fixture[], teamIds: { home: number; away: number } }) {
   if (!fixtures || !fixtures.length) return (
     <div className="p-4 text-center opacity-50">
       <p className="text-[10px] font-black uppercase tracking-widest">No previous match history</p>

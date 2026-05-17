@@ -80,7 +80,7 @@ a, button, [role="button"], input[type="submit"], input[type="button"], .tab-ite
 }
 
 .premium-heading h2 {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.05em;
@@ -91,12 +91,24 @@ a, button, [role="button"], input[type="submit"], input[type="button"], .tab-ite
   -webkit-text-fill-color: transparent;
 }
 
+@media (min-width: 640px) {
+  .premium-heading h2 {
+    font-size: 2.5rem;
+  }
+}
+
 .premium-heading .heading-accent {
   width: 4px;
-  height: 2.5rem;
+  height: 1.5rem;
   background: var(--brand);
   border-radius: 2px;
   box-shadow: 0 0 15px var(--brand);
+}
+
+@media (min-width: 640px) {
+  .premium-heading .heading-accent {
+    height: 2.5rem;
+  }
 }
 
 /* ── Typography ──────────────────────────────────────────────── */

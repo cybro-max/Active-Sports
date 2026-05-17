@@ -10,7 +10,7 @@ interface WidgetProps {
   season?: number | string;
   team?: number | string;
   theme?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 function WidgetSkeleton() {
@@ -62,36 +62,21 @@ function WidgetError({ onRetry }: { onRetry?: () => void }) {
 }
 
 export default function Widget({ type, id, league, season, team, theme = 'dark', ...props }: WidgetProps) {
-  const [mounted, setMounted] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-    setHasError(false);
-  }, [retryKey]);
-
-  useEffect(() => {
-    if (!mounted) return;
     const el = document.querySelector(`[data-widget-id="${type}-${id || team || league || ''}"]`);
     if (!el) return;
     const handler = () => setHasError(true);
     el.addEventListener('error', handler);
     return () => el.removeEventListener('error', handler);
-  }, [mounted, type, id, team, league, retryKey]);
+  }, [type, id, team, league, retryKey]);
 
   const handleRetry = () => {
     setHasError(false);
     setRetryKey(k => k + 1);
   };
-
-  if (!mounted) {
-    return (
-      <div className="rounded-xl bg-white/[0.02] border border-white/5 overflow-hidden min-h-[200px]">
-        <WidgetSkeleton />
-      </div>
-    );
-  }
 
   if (hasError) {
     return (

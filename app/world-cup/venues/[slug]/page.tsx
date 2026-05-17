@@ -41,7 +41,7 @@ export default async function VenueDetailPage({ params }: Props) {
   const param = (await params).slug;
 
   // Backward compat: old venue ID format
-  let venueId = VENUE_SLUG_MAP.get(param);
+  const venueId = VENUE_SLUG_MAP.get(param);
   if (!venueId) {
     const oldSlug = VENUE_ID_TO_SLUG.get(param);
     if (oldSlug) redirect(`/world-cup/venues/${oldSlug}`);

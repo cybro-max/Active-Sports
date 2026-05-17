@@ -5,28 +5,12 @@ import { getCountdown, WORLD_CUP_DATE } from '@/lib/utils';
 import { Trophy } from 'lucide-react';
 
 export default function WorldCupCountdown() {
-  const [cd, setCd] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isMounted, setIsMounted] = useState(false);
+  const [cd, setCd] = useState(() => getCountdown(WORLD_CUP_DATE));
 
   useEffect(() => {
-    setIsMounted(true);
-    setCd(getCountdown(WORLD_CUP_DATE));
     const timer = setInterval(() => setCd(getCountdown(WORLD_CUP_DATE)), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  if (!isMounted) {
-    return (
-      <div className="flex justify-center gap-4 sm:gap-6 py-6 opacity-0">
-        {[ 'Days', 'Hours', 'Minutes', 'Seconds' ].map(label => (
-          <div key={label} className="text-center w-24 sm:w-32 bg-[var(--bg-elevated)] border border-[var(--border)] rounded-2xl p-4">
-            <div className="text-4xl sm:text-6xl font-display font-black tabular-nums text-white">00</div>
-            <div className="text-[10px] sm:text-xs mt-2 font-bold tracking-[0.2em] uppercase text-[var(--brand)]">{label}</div>
-          </div>
-        ))}
-      </div>
-    );
-  }
 
   const units = [
     { label: 'Days',    value: cd.days },

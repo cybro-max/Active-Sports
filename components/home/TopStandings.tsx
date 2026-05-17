@@ -3,7 +3,6 @@ import { MAJOR_LEAGUES } from '@/config/leagues';
 import { toSlug } from '@/lib/slug';
 import Image from 'next/image';
 import Link from 'next/link';
-import { captureCatch } from '@/lib/utils';
 import { ChevronRight } from 'lucide-react';
 
 const TOP_LEAGUE_IDS = [39, 140, 135, 78, 61];
@@ -39,7 +38,7 @@ export default async function TopStandings() {
 
             {standings.length > 0 ? (
               <div className="space-y-1">
-                {standings.slice(0, 5).map((s, idx) => (
+                {standings.slice(0, 5).map((s, _idx) => (
                   <div
                     key={s.team.id}
                     className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/[0.03] transition-colors"

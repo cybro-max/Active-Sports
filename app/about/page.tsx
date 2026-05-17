@@ -18,14 +18,14 @@ export default function AboutPage() {
           </div>
           <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[var(--brand)] to-transparent opacity-30" />
         </div>
-        <div className="relative z-10 p-8 sm:p-16 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand-dim)] border border-[var(--brand)] text-[var(--brand)] text-[10px] font-black uppercase tracking-widest mb-6">
+        <div className="relative z-10 p-5 sm:p-16 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand-dim)] border border-[var(--brand)] text-[var(--brand)] text-[9px] sm:text-[10px] font-black uppercase tracking-widest mb-6">
             <Zap className="w-3 h-3 fill-current" /> Our Mission
           </div>
-          <h1 className="text-5xl sm:text-7xl font-display font-black text-white mb-6 tracking-tight leading-[0.95]">
+          <h1 className="text-3xl sm:text-7xl font-display font-black text-white mb-6 tracking-tight leading-[0.95]">
             About <span className="text-[var(--brand)]">ActiveSports</span>
           </h1>
-          <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-[var(--text-muted)] max-w-2xl mx-auto leading-relaxed">
             Built by football fans, for football fans. We combine real-time data, AI-powered insights, and community engagement to create the most complete football experience on the web.
           </p>
         </div>

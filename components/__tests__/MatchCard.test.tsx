@@ -13,13 +13,13 @@ const mockFixture: Fixture = {
   league: {
     id: 39,
     name: 'Premier League',
-    logo: 'logo.png',
+    logo: '/logo.png',
     round: 'Round 1',
     country: 'England',
   },
   teams: {
-    home: { id: 1, name: 'Home Team', logo: 'home.png', winner: null },
-    away: { id: 2, name: 'Away Team', logo: 'away.png', winner: null },
+    home: { id: 1, name: 'Home Team', logo: '/home.png', winner: null },
+    away: { id: 2, name: 'Away Team', logo: '/away.png', winner: null },
   },
   goals: { home: null, away: null },
   score: {
@@ -43,6 +43,6 @@ describe('MatchCard', () => {
   it('links to match page', () => {
     render(<MatchCard fixture={mockFixture} />);
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/match/1');
+    expect(link).toHaveAttribute('href', '/match/home-team-vs-away-team');
   });
 });

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { Fixture } from '@/lib/apifootball';
-import { formatMatchTime, getStatusLabel } from '@/lib/utils';
+import { formatMatchTime } from '@/lib/utils';
 import { matchSlug } from '@/lib/slug';
-import { ChevronRight, Zap } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 interface LiveMatchRowProps {
   fixture: Fixture;

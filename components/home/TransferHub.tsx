@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { TrendingUp, ArrowRight, DollarSign, Zap, Globe, Shield } from 'lucide-react';
-import Image from 'next/image';
 
 const MOCK_TRANSFERS = [
   { id: 1, name: 'Kylian Mbappé', from: 'PSG', to: 'Real Madrid', value: '€180M', status: 'Confirmed', type: 'Free', logo: 'https://media.api-sports.io/football/teams/541.png' },
